@@ -2,12 +2,8 @@ import json
 from dataclasses import dataclass
 from typing import List
 from pathlib import Path
+import yaml
 
-try:
-    import yaml
-    YAML_AVAILABLE = True
-except ImportError:
-    YAML_AVAILABLE = False
 
 @dataclass
 class MP5Config:
@@ -30,7 +26,7 @@ class MP5Config:
     @classmethod
     def from_file(cls,config_path:str)->'MP5Config':
         """Load configuration from YAML or JSON file"""
-        path=Path(cinfig_path)
+        path=Path(config_path)
         if not path.exists():
             raise FileNotFoundError(f"Config file not found: {config_path}")
 

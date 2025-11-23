@@ -25,3 +25,8 @@ class HashUtils:
     def verify_hash(data: bytes, expeted_hash: str, algorithm: str = "sha256") -> bool:
         """Verify data matches expected hash"""
         return HashUtils.hash_data(data,algorithm) == expeted_hash
+
+
+# video_path = "/Users/javantanna/Code/mp5/input.mp4"
+# video_hash = HashUtils.hash_file(video_path)
+# print(f"Video hash: {video_hash}")
