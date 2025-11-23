@@ -227,7 +227,6 @@ class FeatureExtractor:
         features = {
             "blur_score": 0.0,
             "noise_level": 0.0,
-            "compression_artifacts": 0.0,
             "dynamic_range": 0.0,
             "edge_density": 0.0,
             "texture_complexity": 0.0,
@@ -577,7 +576,7 @@ class MP5Encoder:
                 "atom": {"location": f"moov.udta.{self.config.atom_tag}"}
             }
         }
-        
+        #TODO: Add user metadata temp
         # PREPARE LSB METADATA (Hidden AI training payload)
         lsb_metadata = {
             "mp5_version": self.config.version,

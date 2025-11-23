@@ -46,21 +46,36 @@ class MP5Encoder:
         logger.info("Calculating original hash...")
         original_hash=self.hash_utils.calculate_hash(video_path,chunk_size=self.config.hash_chunk_size)
 
+        # AUTO-EXTRACT FEATURES
+        logger.info("\nAuto-extracting video features...")
+        auto_features = self.feature_extractor.extract_all_features(video_path)
 
+        # PREPARE ATOM METADATA (Public file info only)
         # Prepare metadata structure
         atom_metadata={
             "mp5_version": self.config.version,
             "createdon": datetime.now().isoformat() + "Z",
             "original_hash": original_hash,
             "video_info": video_info,
-            "metadata": metadata,
+            "notes": "AI Metadata stored in lsb layer",
             "layers":{
                 "atom": {
-                    "location": f"moov.udta.{self.config.atom_tag}",
-                    "compression": "zlib+base64"
+                    "location": f"moov.udta.{self.config.atom_tag}"
                 }
             }
         }
+
+        
+        #TODO: Add user metadata
+        # PREPARE LSB METADATA (Hidden AI training payload)
+        lsb_metadata = {
+            "mp5_version": self.config.version,
+            "timestamp": atom_metadata["created"],
+            "payload_type": "ai_training_data",
+            "auto_features": auto_features,  # Auto-generated features
+            "user_metadata": user_metadata    # User-provided metadata
+        }
+
 
         if use_lsb:
             # Now Prepare LSB verification data
