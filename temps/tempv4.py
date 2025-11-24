@@ -462,59 +462,117 @@ class LSBLayer:
             return ""
         
         return ''.join(str(flat[32 + i] & 1) for i in range(data_len))
-    
+    def _embed_stream_chunk(self, frame: np.ndarray, data_chunk: str, start_offset: int = 0) -> np.ndarray:
+        # 1. We take the 3D frame (Height, Width, Colors) and squash it into a 1D line of numbers.
+        # Why? It's easier to say "Pixel #500" than "Row 10, Col 20".
+        flat = frame.flatten()
+        
+        # 2. We calculate how many bits we are trying to write right now.
+        chunk_len = len(data_chunk)
+        
+        # 3. SAFETY CHECK:
+        # If the data is too long for the rest of the frame, cut the data short.
+        # This prevents the code from crashing if we run out of pixels in this specific frame.
+        if start_offset + chunk_len > len(flat):
+            chunk_len = len(flat) - start_offset
+            data_chunk = data_chunk[:chunk_len]
+
+        # 4. THE CORE LOOP:
+        # We iterate through every bit of our data chunk.
+        for i in range(chunk_len):
+            # bitwise AND (& 0xFE): This forces the last bit of the pixel to 0 (Clears space).
+            # bitwise OR (| data): This puts our data bit (0 or 1) into that empty spot.
+            # We start writing at 'start_offset' (e.g., pixel 0 or pixel 32).
+            flat[start_offset + i] = (flat[start_offset + i] & 0xFE) | int(data_chunk[i])
+        
+        # 5. We inflate the 1D line back into a 3D picture and return it.
+        return flat.reshape(frame.shape)
+
     def write(self, video_path: str, metadata: bytes, output_path: str) -> bool:
-        data_str = metadata.decode('utf-8')
-        data_bin = self._text_to_binary(data_str)
-        
-        logger.info(f"LSB encoding: {len(data_str)} chars → {len(data_bin)} bits")
-        
-        cap = cv2.VideoCapture(video_path)
-        fps = cap.get(cv2.CAP_PROP_FPS)
-        width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-        
-        temp_output = output_path + '.lsb_temp.mp4'
-        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-        out = cv2.VideoWriter(temp_output, fourcc, fps, (width, height))
-        
-        frame_count = 0
-        embedded = 0
-        progress = ProgressBar(total_frames, "Encoding LSB")
-        
-        while cap.isOpened():
-            ret, frame = cap.read()
-            if not ret:
-                break
+        """Stream metadata across multiple video frames"""
+        try:
+            # 1. Prepare ALL data as one massive binary string
+            data_str = metadata.decode('utf-8')
+            full_binary_payload = self._text_to_binary(data_str)
+            total_bits = len(full_binary_payload)
             
-            if frame_count < self.config.lsb_redundancy:
-                frame = self._embed_in_frame(frame, data_bin)
-                embedded += 1
+            logger.info(f"LSB Payload: {total_bits} bits needed.")
+
+            cap = cv2.VideoCapture(video_path)
+            width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+            height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+            fps = cap.get(cv2.CAP_PROP_FPS)
+            total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
             
-            out.write(frame)
-            frame_count += 1
-            progress.update(1)
-        
-        cap.release()
-        out.release()
-        
-        logger.info("Re-encoding with audio...")
-        import subprocess
-        result = subprocess.run([
-            'ffmpeg', '-i', temp_output, '-i', video_path,
-            '-c:v', 'copy', '-c:a', 'copy',
-            '-map', '0:v:0', '-map', '1:a:0?',
-            output_path, '-y', '-loglevel', 'error'
-        ], capture_output=True)
-        
-        os.remove(temp_output)
-        
-        if result.returncode != 0:
-            raise EncodingError(f"FFmpeg error: {result.stderr.decode()}")
-        
-        logger.info(f"LSB layer written: {embedded} frames")
-        return True
+            # Check capacity
+            # 3 channels (RGB) * width * height = bits per frame
+            bits_per_frame = width * height * 3
+            if total_bits + 32 > bits_per_frame * total_frames:
+                 raise EncodingError("Data too large for this video container!")
+
+            temp_output = output_path + '.lsb_temp.mp4'
+            fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+            out = cv2.VideoWriter(temp_output, fourcc, fps, (width, height))
+            
+            bits_written = 0
+            frame_count = 0
+            
+            # Progress bar
+            with click.progressbar(length=total_frames, label='Embedding Stream') as bar:
+                while cap.isOpened():
+                    ret, frame = cap.read()
+                    if not ret: break
+                    
+                    # Only modify frame if we still have data to write
+                    if bits_written < total_bits:
+                        flat_len = frame.size
+                        current_pixel_idx = 0
+                        
+                        # --- FRAME 0 ONLY: WRITE HEADER ---
+                        if frame_count == 0:
+                            # 1. Embed 32-bit Total Length Header
+                            length_bin = format(total_bits, '032b')
+                            frame = self._embed_stream_chunk(frame, length_bin, start_offset=0)
+                            current_pixel_idx = 32 # Move cursor past header
+                        
+                        # --- WRITE DATA BODY ---
+                        # Calculate space left in this frame
+                        bits_available = flat_len - current_pixel_idx
+                        
+                        # Calculate how much data we can grab
+                        bits_needed = total_bits - bits_written
+                        bits_to_write = min(bits_available, bits_needed)
+                        
+                        if bits_to_write > 0:
+                            # Slice the chunk from the main payload
+                            chunk = full_binary_payload[bits_written : bits_written + bits_to_write]
+                            
+                            # Embed it
+                            frame = self._embed_stream_chunk(frame, chunk, start_offset=current_pixel_idx)
+                            
+                            bits_written += bits_to_write
+
+                    out.write(frame)
+                    frame_count += 1
+                    bar.update(1)
+            
+            cap.release()
+            out.release()
+            
+            # Re-encode with FFmpeg (same as before)
+            logger.info("Merging audio...")
+            import subprocess
+            subprocess.run([
+                'ffmpeg', '-i', temp_output, '-i', video_path,
+                '-c:v', 'copy', '-c:a', 'copy',
+                '-map', '0:v:0', '-map', '1:a:0?',
+                output_path, '-y', '-loglevel', 'error'
+            ])
+            os.remove(temp_output)
+            return True
+            
+        except Exception as e:
+            raise EncodingError(f"LSB Stream Write Error: {str(e)}")
     
     def read(self, video_path: str, frame_index: int = 0) -> Optional[bytes]:
         cap = cv2.VideoCapture(video_path)

@@ -81,37 +81,136 @@ class LSBLayer:
             # directly into that spot.
             flat[32 + i] = cleared_pixel | secret_bit
 
+
+    @staticmethod
+    def _embed_stream_chunk(frame: np.ndarray, data_chunk: str, start_offset: int = 0) -> np.ndarray:
+        # 1. We take the 3D frame (Height, Width, Colors) and squash it into a 1D line of numbers.
+        # Why? It's easier to say "Pixel #500" than "Row 10, Col 20".
+        flat=frame.flatten()
+        
+        # 2. We calculate how many bits we are trying to write right now.
+        chunk_len=len(data_chunk)
+
+        # 3. SAFETY CHECK:
+        # If the data is too long for the rest of the frame, cut the data short.
+        # This prevents the code from crashing if we run out of pixels in this specific frame.
+        if start_offset + chunk_len > len(flat):
+            chunk_len = len(flat) - start_offset
+            data_chunk = data_chunk[:chunk_len]
+
+        # 4. THE CORE LOOP:
+        # We iterate through every bit of our data chunk.
+        for i in range(chunk_len):
+            # bitwise AND (& 0xFE): This forces the last bit of the pixel to 0 (Clears space).
+            # bitwise OR (| data): This puts our data bit (0 or 1) into that empty spot.
+            # We start writing at 'start_offset' (e.g., pixel 0 or pixel 32).
+            cleared_pixel=flat[start_offset + i] & 0xFE
+            secret_bit=int(data_chunk[i])
+
+            flat[start_offset + i] = cleared_pixel | secret_bit
+        
+        # 5. We inflate the 1D line back into a 3D picture and return it.
+        return flat.reshape(frame.shape)
+
+        
+
     @staticmethod
     def write(video_path: str, ai_metadata: bytes, output_path: str) -> bool:
-        data_str=ai_metadata.decode('utf-8')
-        data_binary=LSBLayer._text_to_binary(data_str)
+        try:
+            data_str=ai_metadata.decode('utf-8')
+            data_binary=LSBLayer._text_to_binary(data_str)
+            total_bits = len(data_binary)
 
-        logger.info(f"LSB encoding: {len(data_str)} chars -> {len(data_binary)} bits")
+            logger.info(f"LSB encoding: {len(data_str)} chars -> {len(data_binary)} bits")
 
-        cap=cv2.VideoCapture(video_path)
-        #gatherin video info
-        fps = cap.get(cv2.CAP_PROP_FPS)
-        width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+            cap=cv2.VideoCapture(video_path)
+            #gatherin video info
+            fps = cap.get(cv2.CAP_PROP_FPS)
+            width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+            height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+            total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+            # Check capacity
+            # 3 channels (RGB) * width * height = bits per frame
+            bits_per_frame = width * height * 3
+            if total_bits + 32 > bits_per_frame * total_frames:
+                    raise EncodingError("Data too large for this video container!")
 
-        temp_output=output_path + '.lsb_temp.mp4'
-        fourcc=cv2.VideoWriter_fourcc(*'mp4v')
-        # print(fourcc)
-        out=cv2.VideoWriter(temp_output,fourcc,fps,(width,height))
+            temp_output=output_path + '.lsb_temp.mp4'
+            fourcc=cv2.VideoWriter_fourcc(*'mp4v')
+            # print(fourcc)
+            out=cv2.VideoWriter(temp_output,fourcc,fps,(width,height))
 
+            bits_written = 0
+            frame_count = 0
+            embedded=0
+            with click.progressbar(length=total_frames, label='Embedding Stream') as bar:
+                while cap.isOpened():
+                    
+                    ret,frame=cap.read()
 
-        frame_count=0
-        embedded=0
-        progress=ProgressBar(total=total_frames,"Encoding LSB video...")
+                    if not ret:break
+                    if bits_written < total_bits:
 
-        while cap.isOpened():
-            ret,frame=cap.read()
-            if not ret:
-                break
+                        flat_len = frame.size  # Total pixels in this frame
+                        current_pixel_idx = 0  # Start writing at the beginning of the frame
+
+                        # --- FRAME 0 ONLY: WRITE HEADER ---
+                        if frame_count==0:
+                            # 1. Embed 32-bit Total Length Header
+                            length_bin = format(total_bits, '032b')
+
+                            frame=LSBLayer._embed_stream_chunk(frame, length_bin, start_offset=0)
+                            current_pixel_idx = 32 # Move cursor past header
+
+                        # --- WRITE DATA BODY ---
+                        # Calculate space left in this frame
+                        bits_available=flat_len - current_pixel_idx
+
+                        # Calculate how many bits we can write in this frame
+                        bits_needed=total_bits - bits_written
+                        bits_to_write=min(bits_available,bits_needed)
+
+                        if bits_to_write > 0:
+                            # Slice the chunk from the main payload
+                            chunk=data_binary[bits_written : bits_written + bits_to_write]
+
+                            frame= LSBLayer._embed_stream_chunk(frame,chunk,current_pixel_idx)
+                            bits_written+=bits_to_write
+                    
+                    out.write(frame)
+                    frame_count+=1
+                    bar.update(1)
             
-            if frame_count < self.config.lsb_redundancy:
-                frame=
+            cap.release()
+            out.release()
+
+            # So now our mp5 video is ready ***but*** there is no audio in it bcoz cv2.VideoWriter doesn't support audio.
+            # So we need to copy the audio from the original video to our new mp5 video.
+
+            # USING FFMPEG
+            logger.info("Embedding Audio")
+            import subprocess
+            subprocess.run([
+                'ffmpeg',
+                '-i', temp_output,
+                '-i', video_path,
+                '-c:v', 'copy',
+                '-c:a', 'copy',
+                '-map', '0:v:0',
+                '-map', '1:a:0?',
+                output_path, '-y',
+                '-loglevel', 'error'
+            ])
+
+            os.remove(temp_output)
+            return True
+
+        except Exception as e:
+            raise EncodingError(f"LSBLayer.write() failed: {str(e)}")
+    # TODO continue from here
+        
+
+                    
 
 
 # fake_frame = np.arange(100, 150, dtype=np.uint8).reshape((5, 10))
