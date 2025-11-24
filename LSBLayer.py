@@ -1,5 +1,10 @@
 from MP5Config import MP5Config
+import logging
 import numpy as np
+import cv2
+
+
+logger=logging.getLogger("mp5")
 class LSBLayer:
     def __init__(self,config:MP5Config):
         self.config=config
@@ -76,7 +81,37 @@ class LSBLayer:
             # directly into that spot.
             flat[32 + i] = cleared_pixel | secret_bit
 
+    @staticmethod
+    def write(video_path: str, ai_metadata: bytes, output_path: str) -> bool:
+        data_str=ai_metadata.decode('utf-8')
+        data_binary=LSBLayer._text_to_binary(data_str)
 
+        logger.info(f"LSB encoding: {len(data_str)} chars -> {len(data_binary)} bits")
+
+        cap=cv2.VideoCapture(video_path)
+        #gatherin video info
+        fps = cap.get(cv2.CAP_PROP_FPS)
+        width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+        temp_output=output_path + '.lsb_temp.mp4'
+        fourcc=cv2.VideoWriter_fourcc(*'mp4v')
+        # print(fourcc)
+        out=cv2.VideoWriter(temp_output,fourcc,fps,(width,height))
+
+
+        frame_count=0
+        embedded=0
+        progress=ProgressBar(total=total_frames,"Encoding LSB video...")
+
+        while cap.isOpened():
+            ret,frame=cap.read()
+            if not ret:
+                break
+            
+            if frame_count < self.config.lsb_redundancy:
+                frame=
 
 
 # fake_frame = np.arange(100, 150, dtype=np.uint8).reshape((5, 10))
@@ -84,3 +119,6 @@ class LSBLayer:
 # secret_data = b"101"
 # result=LSBLayer._embed_in_frame(fake_frame,secret_data)
 # # print(result_frame)
+
+# LSBLayer.write("E:\mp5\input.mp4",b"Hello World", "E:\mp5\outputs\output.mp5")
+

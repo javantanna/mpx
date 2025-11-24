@@ -576,7 +576,7 @@ class MP5Encoder:
                 "atom": {"location": f"moov.udta.{self.config.atom_tag}"}
             }
         }
-        #TODO: Add user metadata temp
+        
         # PREPARE LSB METADATA (Hidden AI training payload)
         lsb_metadata = {
             "mp5_version": self.config.version,
@@ -598,6 +598,7 @@ class MP5Encoder:
             # Write LSB layer (HIDDEN AI METADATA)
             logger.info("\nWriting LSB layer (Hidden AI metadata)...")
             temp_path = output_path + '.mp5_lsb_temp.mp4'
+            #TODO: complete here
             self.lsb_layer.write(video_path, lsb_compressed, temp_path)
             
             # Write Atom layer (Public file info)

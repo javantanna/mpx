@@ -20,7 +20,7 @@ class CompressionUtils:
     @staticmethod
     def compress_json(data: Dict, level: int = 6)->bytes:
         """Compress JSON data"""
-        json_str = json.dunps(data,separators=(',',':'), sort_keys=True)
+        json_str = json.dumps(data,separators=(',',':'), sort_keys=True)
         json_bytes = json_str.encode('utf-8')
         compressed = zlib.compress(json_bytes, level=level)
         return base64.b64encode(compressed)

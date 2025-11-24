@@ -66,7 +66,7 @@ class MP5Encoder:
         }
 
         
-        #TODO: Add user metadata
+       
         # PREPARE LSB METADATA (Hidden AI training payload)
         lsb_metadata = {
             "mp5_version": self.config.version,
@@ -75,10 +75,28 @@ class MP5Encoder:
             "auto_features": auto_features,  # Auto-generated features
             "user_metadata": user_metadata    # User-provided metadata
         }
-
+        logger.info("Compressing metadata...")
+        atom_compressed = self.compression.compress_json(atom_metadata)
+        lsb_compressed = self.compression.compress_json(lsb_metadata)
+        
+        original_size=len(json.dumps(lsb_metadata))
+        compressed_size = len(lsb_compressed)
+        ratio=original_size/compressed_size if compressed_size>0 else 0
+        logger.info(f"Compression: {original_size} → {compressed_size} bytes ({ratio:.1f}x)")
 
         if use_lsb:
-            # Now Prepare LSB verification data
+             # Write LSB layer (HIDDEN AI METADATA)
+            logger.info("\nWriting LSB layer (Hidden AI metadata)...")
+            temp_path = output_path + 'mp5_lsb_temp.mp4'
+
+             #TODO: complete from here
+            self.lsb_layer.write(video_path, lsb_compressed, temp_path)
+            
+
+
+
+
+
 
             atom_json=json.dumps(atom_metadata,sort_keys=True)
             # we are converting '{"key":"value"}' to b'{"key":"value"}'
