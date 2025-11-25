@@ -574,21 +574,64 @@ class LSBLayer:
         except Exception as e:
             raise EncodingError(f"LSB Stream Write Error: {str(e)}")
     
-    def read(self, video_path: str, frame_index: int = 0) -> Optional[bytes]:
-        cap = cv2.VideoCapture(video_path)
-        cap.set(cv2.CAP_PROP_POS_FRAMES, frame_index)
-        ret, frame = cap.read()
-        cap.release()
-        
-        if not ret:
-            return None
-        
-        data_bin = self._extract_from_frame(frame)
-        if not data_bin:
-            return None
-        
-        data_str = self._binary_to_text(data_bin)
-        return data_str.encode('utf-8')
+    def read(self, video_path: str, max_frames: int = 1000) -> Optional[bytes]:
+        try:
+            cap = cv2.VideoCapture(video_path)
+            
+            # 1. Read Frame 0 immediately. We assume the Header is here.
+            ret, frame = cap.read()
+            if not ret: return None
+            
+            flat = frame.flatten()
+            
+            # 2. EXTRACT HEADER
+            # Read the LSBs of the first 32 pixels.
+            length_bin = ''.join(str(flat[i] & 1) for i in range(32))
+            
+            # Convert binary "001010..." into integer length (e.g., 50,000 bits).
+            total_bits_expected = int(length_bin, 2)
+            
+            # Safety check to ensure we didn't just read random noise.
+            if total_bits_expected <= 0 or total_bits_expected > 1_000_000_000:
+                return None 
+            
+            # 3. EXTRACT DATA FROM FRAME 0
+            # Calculate how much data fits in Frame 0 (Total pixels minus 32 for header).
+            bits_in_frame0 = min(total_bits_expected, len(flat) - 32)
+            
+            # Read those bits starting from pixel 32.
+            chunk0 = ''.join(str(flat[32 + i] & 1) for i in range(bits_in_frame0))
+            
+            full_binary_data.append(chunk0)
+            bits_read += bits_in_frame0
+            
+            # 4. LOOP THROUGH REMAINING FRAMES
+            # Keep reading new frames until we have collected 'total_bits_expected'.
+            while bits_read < total_bits_expected and cap.isOpened():
+                ret, frame = cap.read()
+                if not ret: break
+                
+                flat = frame.flatten()
+                
+                # Calculate how many bits we still need.
+                bits_needed = total_bits_expected - bits_read
+                
+                # Take either what we need, or the whole frame if we need more.
+                bits_to_take = min(bits_needed, len(flat))
+                
+                # Read bits starting from pixel 0 (no header on these frames).
+                chunk = ''.join(str(flat[i] & 1) for i in range(bits_to_take))
+                
+                full_binary_data.append(chunk)
+                bits_read += bits_to_take
+            
+            # 5. RECONSTRUCT
+            # Glue all the chunks together into one massive binary string.
+            final_binary_str = "".join(full_binary_data)
+            
+            # Convert Binary -> Text -> Bytes -> Return
+            data_str = self._binary_to_text(final_binary_str)
+            return data_str.encode('utf-8')
 
 
 # =============================================================================
