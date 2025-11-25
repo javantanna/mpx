@@ -632,7 +632,9 @@ class LSBLayer:
             # Convert Binary -> Text -> Bytes -> Return
             data_str = self._binary_to_text(final_binary_str)
             return data_str.encode('utf-8')
-
+    
+        except Exception as e:
+            raise DecodingError(f"LSB Stream Read Error: {str(e)}")
 
 # =============================================================================
 # ENCODER (AI Metadata in LSB)

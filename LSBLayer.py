@@ -2,6 +2,9 @@ from MP5Config import MP5Config
 import logging
 import numpy as np
 import cv2
+from Exceptions import EncodingError,DecodingError
+from typing import Optional
+import click
 
 
 logger=logging.getLogger("mp5")
@@ -208,9 +211,69 @@ class LSBLayer:
         except Exception as e:
             raise EncodingError(f"LSBLayer.write() failed: {str(e)}")
     # TODO continue from here
-        
 
-                    
+    @staticmethod
+    def read(mp5_video_path:str,max_frames:int=1000)->Optional[bytes]:
+        try:
+            cap=cv2.VideoCapture(mp5_video_path)
+            
+            # 1. Read frame 0 immediatrly, we assume Header is here
+            ret,frame=cap.read()
+            if not ret: return None
+
+            flat=frame.flatten()
+            
+            # 2. EXTRACT HEADER
+            # Read the LSBs of the first 32 pixels.
+            length_bin= ''.join(str(flat[i] & 1) for i in range(32))
+
+            # Convert binary to integer length to find the length of actual data 
+            total_bits_expected=int(length_bin,2)
+
+            # safety check to ensure we didn't just reading random noise
+            if total_bits_expected <=0 or total_bits_expected > max_frames * frame.shape[0] * frame.shape[1] * 3:
+                return None
+
+            # 3. EXTRACT DATA from frame 0
+            # Calculate how much data fits in Frame 0 (Total pixels minus 32 for header).
+            bits_in_frame0=min(total_bits_expected,len(flat)-32)
+            chunk0= ''.join(str(flat[32+i] & 1) for i in range(bits_in_frame0))
+
+            full_binary_data.append(chunk0)
+            bits_read+=bits_in_frame0
+            
+            
+            # 4. LOOP THROUGH REMAINING FRAMES
+            # Keep reading new frames until we have collected 'total_bits_expected'.
+            while bits_read < total_bits_expected:
+                ret,frame=cap.read()
+                if not ret: break
+                
+                flat=frame.flatten()
+                
+                # Calculate how much data we need to read
+                bits_needed=total_bits_expected-bits_read
+                
+                # Take either what we need, or the whole frame if we need more.
+                bits_to_take=min(len(flat),bits_needed)
+
+                #read bits in frame from pixel 0 (and not header in it)
+                chunk=''.join(str(flat[i] & 1) for i in range(bits_to_take))
+
+                full_binary_data.append(chunk)
+                bits_read+=bits_to_take
+
+            # 5. COMBINE ALL DATA
+            #Glue all the chunks together
+            full_binary_data=''.join(full_binary_data)
+
+            # Convert Binary -> Text -> Bytes -> Return
+            data_str=LSBLayer._binary_to_text(full_binary_data)
+            data_bytes=data_str.encode('utf-8')
+            return data_bytes
+
+        except Exception as e:
+            raise DecodingError(f"LSBLayer.read() failed: {str(e)}")           
 
 
 # fake_frame = np.arange(100, 150, dtype=np.uint8).reshape((5, 10))
@@ -219,5 +282,8 @@ class LSBLayer:
 # result=LSBLayer._embed_in_frame(fake_frame,secret_data)
 # # print(result_frame)
 
-# LSBLayer.write("E:\mp5\input.mp4",b"Hello World", "E:\mp5\outputs\output.mp5")
+LSBLayer.write("E:\mp5\input.mp4",b"Hello World", "E:\mp5\outputs\output.mp5")
+
+print(LSBLayer.read("E:\mp5\outputs\output.mp5.lsb_temp.mp4"))
+
 
