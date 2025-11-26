@@ -2,6 +2,7 @@ from MP5Config import MP5Config
 import logging
 import numpy as np
 import cv2
+import os
 from Exceptions import EncodingError,DecodingError
 from typing import Optional
 import click
@@ -138,8 +139,12 @@ class LSBLayer:
             if total_bits + 32 > bits_per_frame * total_frames:
                     raise EncodingError("Data too large for this video container!")
 
-            temp_output=output_path + '.lsb_temp.mp4'
-            fourcc=cv2.VideoWriter_fourcc(*'mp4v')
+            # CHANGED FROM THIS 
+            # temp_output=output_path + '.lsb_temp.mp4'
+            # fourcc=cv2.VideoWriter_fourcc(*'mp4v')
+            # TO THIS BELOW
+            temp_output=output_path + '.lsb_temp.avi'
+            fourcc=cv2.VideoWriter_fourcc(*'FFV1')
             # print(fourcc)
             out=cv2.VideoWriter(temp_output,fourcc,fps,(width,height))
 
@@ -201,6 +206,7 @@ class LSBLayer:
                 '-c:a', 'copy',
                 '-map', '0:v:0',
                 '-map', '1:a:0?',
+                '-f', 'mp4',
                 output_path, '-y',
                 '-loglevel', 'error'
             ])
@@ -229,6 +235,10 @@ class LSBLayer:
 
             # Convert binary to integer length to find the length of actual data 
             total_bits_expected=int(length_bin,2)
+
+            # Initialize data collection
+            full_binary_data = []
+            bits_read = 0
 
             # safety check to ensure we didn't just reading random noise
             if total_bits_expected <=0 or total_bits_expected > max_frames * frame.shape[0] * frame.shape[1] * 3:
@@ -282,8 +292,8 @@ class LSBLayer:
 # result=LSBLayer._embed_in_frame(fake_frame,secret_data)
 # # print(result_frame)
 
-LSBLayer.write("E:\mp5\input.mp4",b"Hello World", "E:\mp5\outputs\output.mp5")
+# LSBLayer.write("/Users/javantanna/Code/mp5/input.mp4",b"Hello World", "/Users/javantanna/Code/mp5/outputs/output.mp5")
 
-print(LSBLayer.read("E:\mp5\outputs\output.mp5.lsb_temp.mp4"))
+# print(LSBLayer.read("/Users/javantanna/Code/mp5/outputs/output.mp5"))
 
 

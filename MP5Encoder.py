@@ -6,6 +6,7 @@ from datetime import datetime
 from typing import Dict, Any
 from VideoUtils import VideoUtils
 import json
+from Exceptions import IntegrityError
 
 class MP5Encoder:
     """MP5 Encoder"""
@@ -65,7 +66,7 @@ class MP5Encoder:
             }
         }
 
-        
+
        
         # PREPARE LSB METADATA (Hidden AI training payload)
         lsb_metadata = {
@@ -92,45 +93,49 @@ class MP5Encoder:
              #TODO: complete from here
             self.lsb_layer.write(video_path, lsb_compressed, temp_path)
             
+            # Write in atom Layer (PUBLIC FILE INFO)
+            logger.info("\n writing in Atom Layer")
+            self.atom_layer.write(temp_path,atom_compressed,output_path)
+            os.remove(temp_path)
 
 
+            # if not use_lsb
+        else:
+            # Write in atom Layer (PUBLIC FILE INFO)
+            logger.warning("LSB disabled - storing in atom layer instead")
+            atom_metadata["ai_metadata"] = lsb_metadata
+            atom_compressed = self.compression.compress_json(atom_metadata)
+            self.atom_layer.write(video_path, atom_compressed, output_path)
 
+        if verify:
+            logger.info("\nVerifying...")
+            verifier=MP5Verifier(self.config)
 
+            verification =verifier.verify(output_path)
+            logger.info(f"Verification result: {verification['overall']}")
 
+            if verification['overall'] not in ["verified","partial"]:
+                raise IntegrityError("Verification failed")
+            
 
-            atom_json=json.dumps(atom_metadata,sort_keys=True)
-            # we are converting '{"key":"value"}' to b'{"key":"value"}'
-            atom_checksum=self.hash_utils.hash_data(atom_json.encode())
-            lsb_metadata={
-                "mp5_version": self.config.version,
-                "atom_checksum": atom_checksum,
-                "timestamp": atom_metadata["createdon"]
-            }
+        end_time=datetime.now()
+        duration=(end_time - start_time).total_seconds()
+        logger.info(f"Encoding completed in {duration:.2f} seconds")
 
-            lsb_json=json.dumps(lsb_metadata,sort_keys=True)
-            lsb_checksum=self.hash_utils.hash_data(lsb_json.encode())
+        result={
+            "success": True,
+            "input_file": video_path,
+            "output_file": output_path,
+            "input_size_mb": input_size / (1024 * 1024),
+            "output_size_mb": output_size / (1024 * 1024),
+            "size_increase_percent": size_increase,
+            "encoding_time_seconds": duration,
+            "storage_layer": "LSB (hidden)" if use_lsb else "Atom (visible)",
+            "features_extracted": len(auto_features),
+            "original_hash": original_hash
+        }
 
-            atom_metadata["layers"]["lsb"]={
-                "frames": list(range(self.config.lsb_redundancy)),
-                "redundancy": self.config.lsb_redundancy,
-                "checksum": lsb_checksum
-            }
+        logger.info(f"\n✓ Encoding complete in {duration:.2f}s (+{size_increase:.3f}% size)")
 
-            # Compressing metadata
-            logger.info("Compressing metadata...")
-            atom_compressed=self.compression.compress_data(atom_metadata,level=self.config.compression_level)
-
-            original_size=len(json.dumps(atom_metadata))
-            compressed_size=len(atom_compressed)
-            ratio=original_size/compressed_size if compressed_size>0 else 0
-            logger.info(f"Compression: {original_size} → {compressed_size} bytes ({ratio:.1f}x)")
-
-
-            if use_lsb:
-                lsb_compressed=self.compression.compress_json(lsb_metadata,level=self.config.compression_level) 
-
-                # Write LSB layer first
-                logger.info("Writing LSB layer...")
-                temp_path=output_path + ".lsb"
-                self.lsb_layer.write_lsb_layer(video_path,lsb_compressed,temp_path)
-        
+        return result
+            
