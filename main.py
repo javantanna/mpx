@@ -1,7 +1,8 @@
 from LoggingSetup import *
 from MP5Config import MP5Config
 from Exceptions import *
-from MP5Encoder import MP5Encoder
+from MP5Encoder import MP5Encoder  
+
 
 def print_header():
     print(f"\n{Colors.CYAN}{Colors.BOLD}MP5 - Enterprise Video Metadata Tool{Colors.RESET}")
@@ -29,6 +30,7 @@ def cmd_encode(args):
     try:
         result = encoder.encode(input_video, metadata)
 
+        # Display results
         print_separator()
         print(f"{Colors.GREEN}{Colors.BOLD}✓ ENCODING SUCCESSFUL{Colors.RESET}")
         print_separator()
@@ -46,6 +48,100 @@ def cmd_encode(args):
     except Exception as e:
         print(f"\n{Colors.RED}✗ Encoding failed: {str(e)}{Colors.RESET}")
         return 1
+
+def cmd_decode(args)->int:
+    """Decode video with metadata"""
+    if len(args) < 1:
+        print("Error Decoder required <input.mp5>")
+        print("usage: python mp5.py decode input.mp5")
+        return 1
+    input_mp5=args[0]
+    output_file=None
+    
+
+    print_header()
+
+    config=MP5Config()
+    decoder=MP5Decoder(config)
+
+    try:
+        result=decoder.decode(input_mp5)
+
+        print_separator()
+        print(f"{Colors.GREEN}{Colors.BOLD}✓ DECODING SUCCESSFUL{Colors.RESET}")
+        print_separator()
+
+        if result.get("file_info"):
+            info = result["file_info"]#----------
+            print(f"MP5 Version: {info.get('mp5_version')}")
+            print(f"Created: {info.get('created')}")
+            print(f"Original Hash: {info.get('original_hash', '')[:16]}...")
+        print()
+
+        if result.get("ai_metadata"):
+            print(f"{Colors.CYAN}Hidden AI Metadata Found:{Colors.RESET}")
+            print(f"  Auto-features: {len(result.get('auto_features', {}))} features")
+            print(f"  User metadata: {len(result.get('user_metadata', {}))} keys")
+        else:
+            print(f"{Colors.YELLOW}⚠ No hidden AI metadata found{Colors.RESET}")
+
+        print_separator()
+        
+        with open("metadata.json", 'w') as f:
+            json.dump(result, f, indent=2)
+        print(f"\nMetadata saved to: {output_file}")
+
+        print("\nExtracted Data:")
+        print(json.dumps(result, indent=2))
+
+        print()
+        return 0
+    except Exception as e:
+        print(f"\n{Colors.RED}✗ Decoding failed: {str(e)}{Colors.RESET}")
+        return 1
+
+def print_header():
+    print(f"\n{Colors.CYAN}{Colors.BOLD}MP5 - Enterprise Video Metadata Tool{Colors.RESET}")
+    print(f"{Colors.CYAN}Version 1.0.0 - Auto Feature Extraction{Colors.RESET}\n")
+
+
+def print_separator():
+    print("=" * 60)
+
+def show_help():
+    print("""
+Usage:
+    python mp5.py encode <input.mp4> <user_metadata.json>
+    python mp5.py decode <input.mp5>
+    python mp5.py verify <input.mp5>
+    python mp5.py info <input.mp5>
+    python mp5.py help
+
+Commands:
+    encode    Auto-extract features and embed in video (LSB layer)
+    decode    Extract hidden AI metadata from video
+    verify    Verify integrity and presence of hidden metadata
+    info      Show detailed file information
+    help      Show this help message
+
+Examples:
+    # Encode (auto-generates features)
+    python mp5.py encode video.mp4 metadata.json output.mp5
+    
+    # Decode
+    python mp5.py decode output.mp5
+    
+    # Verify
+    python mp5.py verify output.mp5
+
+Features Auto-Extracted:
+    - blur_score, noise_level, compression_artifacts
+    - dynamic_range, edge_density, texture_complexity
+    - letterbox_ratio, rule_of_thirds_score
+    - motion_intensity, static_frame_ratio, camera_shake
+    - scene_cut_count, volume_rms, audio_peak, silence_ratio
+""")
+
 
 
 def main():
@@ -66,8 +162,8 @@ def main():
         if command == "encode":
             cmd_encode(args)
         elif command == "decode":
-        
-        elif command == "verify":
+            cmd_decode(args)
+        # elif command == "verify":
         
         else:
             raise ValidationError(f"Invalid command: {command}",{"Expected commands": "encode, decode, verify"})

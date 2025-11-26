@@ -7,6 +7,8 @@ from typing import Dict, Any
 from VideoUtils import VideoUtils
 import json
 from Exceptions import IntegrityError
+from FeatureExtractor import FeatureExtractor
+from MP5Config import MP5Config
 
 class MP5Encoder:
     """MP5 Encoder"""
