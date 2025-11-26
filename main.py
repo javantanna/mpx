@@ -1,8 +1,10 @@
+import json
+import sys
 from LoggingSetup import *
 from MP5Config import MP5Config
 from Exceptions import *
 from MP5Encoder import MP5Encoder  
-
+from MP5Decoder import MP5Decoder
 
 def print_header():
     print(f"\n{Colors.CYAN}{Colors.BOLD}MP5 - Enterprise Video Metadata Tool{Colors.RESET}")
@@ -146,7 +148,7 @@ Features Auto-Extracted:
 
 def main():
     log_file="mp5.log"
-    setup_logging(log_file=log_file)
+    logger = setup_logging(log_file=log_file)
 
     if len(sys.argv) < 2:
         print("\n Create the best video for AI on the Internet : MP5 ")
@@ -173,3 +175,5 @@ def main():
         sys.exit(1)
 
 
+if __name__ == "__main__":
+    main()

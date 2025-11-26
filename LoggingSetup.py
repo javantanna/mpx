@@ -3,6 +3,15 @@ import sys
 from typing import Optional
 
 # LOGGING SETUP
+class Colors:
+    CYAN = '\033[36m'
+    GREEN = '\033[32m'
+    YELLOW = '\033[33m'
+    RED = '\033[31m'
+    MAGENTA = '\033[35m'
+    BOLD = '\033[1m'
+    RESET = '\033[0m'
+
 class ColoredFormatter(logging.Formatter):
     """Colored console output for better readability"""
     COLORS={
@@ -16,7 +25,7 @@ class ColoredFormatter(logging.Formatter):
     }
 
     def format(self,record):
-        color =self.COLORS.get(record.levelname,self.COLORS['RESER'])
+        color =self.COLORS.get(record.levelname,self.COLORS['RESET'])
         record.levelname=f"{color}{record.levelname}{self.COLORS['RESET']}"
         return super().format(record)
 
@@ -24,7 +33,7 @@ def setup_logging(level:str="INFO",log_file:Optional[str]=None):
     """Configure logging with console and optional file output"""
 
     logger=logging.getLogger("mp5")
-    logger.setlevel(getattr(logging,level))
+    logger.setLevel(getattr(logging,level))
 
     # Console handler with colors
     console_handler = logging.StreamHandler(sys.stdout)

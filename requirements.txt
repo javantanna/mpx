@@ -1,0 +1,8 @@
+PyYAML
+mutagen
+numpy
+opencv-python
+click
+# scenedetect
+ffmpeg-python
+moviepy

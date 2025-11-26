@@ -29,6 +29,6 @@ class CompressionUtils:
     def decompress_json(data: bytes)->Dict:
         """Decompress JSON data"""
         compressed=base64.b64decode(data)
-        json_bytes = zlib.decompress(data)
+        json_bytes = zlib.decompress(compressed)
         json_str = json_bytes.decode('utf-8')
-        return json_str
+        return json.loads(json_str)

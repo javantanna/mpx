@@ -1,0 +1,47 @@
+{
+  "file_info": {
+    "ai_metadata": {
+      "mp5_version": "1.0.0",
+      "payload_type": "ai_training_data",
+      "timestamp": "2025-11-26T17:23:39.923124Z",
+      "user_metadata": {
+        "file_info": {
+          "created": "2025-11-26T16:56:20.436694Z",
+          "layers": {
+            "atom": {
+              "location": "moov.udta.\u00a9mp5"
+            }
+          },
+          "mp5_version": "1.0.0",
+          "notes": "AI Metadata stored in lsb layer",
+          "original_hash": "17a57475727dfb006e0523a05be8b6914f5785b627fc0670581d83b4be0a2d51",
+          "video_info": {
+            "codec": 875967080,
+            "duration": 3.5753,
+            "fps": 29.927558526557213,
+            "frame_count": 107,
+            "height": 850,
+            "width": 478
+          }
+        }
+      }
+    },
+    "created": "2025-11-26T17:23:39.923124Z",
+    "layers": {
+      "atom": {
+        "location": "moov.udta.\u00a9mp5"
+      }
+    },
+    "mp5_version": "1.0.0",
+    "notes": "AI Metadata stored in lsb layer",
+    "original_hash": "17a57475727dfb006e0523a05be8b6914f5785b627fc0670581d83b4be0a2d51",
+    "video_info": {
+      "codec": 875967080,
+      "duration": 3.5753,
+      "fps": 29.927558526557213,
+      "frame_count": 107,
+      "height": 850,
+      "width": 478
+    }
+  }
+}

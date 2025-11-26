@@ -196,7 +196,7 @@ class LSBLayer:
             # So we need to copy the audio from the original video to our new mp5 video.
 
             # USING FFMPEG
-            logger.info("Embedding Audio")
+            logger.info("Embedding Audio & Converting to H.264 Lossless")
             import subprocess
             subprocess.run([
                 'ffmpeg',

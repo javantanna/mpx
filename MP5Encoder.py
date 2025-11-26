@@ -9,6 +9,11 @@ import json
 from Exceptions import IntegrityError
 from FeatureExtractor import FeatureExtractor
 from MP5Config import MP5Config
+from MP5Verifier import MP5Verifier
+import logging
+import os
+
+logger = logging.getLogger("mp5")
 
 class MP5Encoder:
     """MP5 Encoder"""
@@ -18,11 +23,12 @@ class MP5Encoder:
         self.lsb_layer=LSBLayer(config)
         self.hash_utils=HashUtils()
         self.compression=CompressionUtils()
+        self.feature_extractor = FeatureExtractor()
 
     def encode(
         self,
         video_path: str,
-        metadata: Dict[str, Any],
+        user_metadata: Dict[str, Any],
         output_path: str= "output.mp5",
         use_lsb: bool = True,
         verify: bool = True
@@ -38,7 +44,7 @@ class MP5Encoder:
         logger.info(f"Starting encoding process for {video_path}")
 
         # Validate Input File
-        VideoUtils.validate_input_file(video_path,self.config)
+        VideoUtils.validate_video(video_path,self.config)
 
         # Get video info
         video_info=VideoUtils.get_video_info(video_path)
@@ -47,7 +53,7 @@ class MP5Encoder:
         
         # Calculate Original hash
         logger.info("Calculating original hash...")
-        original_hash=self.hash_utils.calculate_hash(video_path,chunk_size=self.config.hash_chunk_size)
+        original_hash=self.hash_utils.hash_file(video_path, chunk_size=self.config.chunk_size)
 
         # AUTO-EXTRACT FEATURES
         logger.info("\nAuto-extracting video features...")
@@ -57,7 +63,7 @@ class MP5Encoder:
         # Prepare metadata structure
         atom_metadata={
             "mp5_version": self.config.version,
-            "createdon": datetime.now().isoformat() + "Z",
+            "created": datetime.now().isoformat() + "Z",
             "original_hash": original_hash,
             "video_info": video_info,
             "notes": "AI Metadata stored in lsb layer",
@@ -117,12 +123,18 @@ class MP5Encoder:
             logger.info(f"Verification result: {verification['overall']}")
 
             if verification['overall'] not in ["verified","partial"]:
+                if 'error' in verification:
+                    logger.error(f"Verification details: {verification['error']}")
                 raise IntegrityError("Verification failed")
             
 
         end_time=datetime.now()
         duration=(end_time - start_time).total_seconds()
         logger.info(f"Encoding completed in {duration:.2f} seconds")
+
+        input_size = os.path.getsize(video_path)
+        output_size = os.path.getsize(output_path)
+        size_increase = ((output_size - input_size) / input_size) * 100 if input_size > 0 else 0
 
         result={
             "success": True,

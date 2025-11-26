@@ -2,7 +2,7 @@ import cv2
 from typing import Dict, Any
 from MP5Config import MP5Config
 from pathlib import Path
-from scenedetect import detect, ContentDetector
+# from scenedetect import detect, ContentDetector
 
 class VideoUtils:
     """Video processing utilities"""
@@ -49,11 +49,11 @@ class VideoUtils:
         
         return True
     
-    @staticmethod
-    def get_scene_cuts(video_path):
-        """Returns list of [Start Time, End Time] for every scene"""
-        scene_list = detect(video_path, ContentDetector())
-        return [(s[0].get_seconds(), s[1].get_seconds()) for s in scene_list]
+    # @staticmethod
+    # def get_scene_cuts(video_path):
+    #     """Returns list of [Start Time, End Time] for every scene"""
+    #     scene_list = detect(video_path, ContentDetector())
+    #     return [(s[0].get_seconds(), s[1].get_seconds()) for s in scene_list]
 
 # vidinfo=VideoUtils.get_video_info("/Users/javantanna/Code/mp5/input.mp4")
 # print(vidinfo)

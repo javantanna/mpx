@@ -1,6 +1,13 @@
 from CompressionUtils import CompressionUtils
 from AtomLayer import AtomLayer
 from LSBLayer import LSBLayer
+import logging
+from typing import Dict, Any, Optional
+from MP5Config import MP5Config
+
+
+logger = logging.getLogger("mp5")
+
 
 class MP5Decoder:
     def __init__(self,config:MP5Config):
@@ -20,7 +27,7 @@ class MP5Decoder:
         try:
             lsb_compressed=self.lsb_layer.read(mp5_path)
             if lsb_compressed:
-                lab_data=self.compression.decompress_json(lsb_compressed)
+                lsb_data=self.compression.decompress_json(lsb_compressed)
                 result["ai_metadata"]=lsb_data
                 result["auto_features"]=lsb_data.get("auto_features",{})
                 result["user_metadata"]=lsb_data.get("user_metadata",{})

@@ -38,7 +38,6 @@ class AtomLayer:
         """Read metadata from MP5 atom layer"""
         try:
             video=MP4(video_path)
-            print(video)
             if self.config.atom_tag not in video:
                 return None
             

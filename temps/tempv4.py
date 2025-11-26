@@ -662,7 +662,6 @@ class MP5Encoder:
                    f"{video_info['fps']:.2f} fps, {video_info['duration']:.2f}s")
         
         logger.info("Calculating video hash...")
-        original_hash = self.hash_utils.hash_file(video_path)
         
         # AUTO-EXTRACT FEATURES
         logger.info("\nAuto-extracting video features...")
