@@ -29,8 +29,8 @@ class MP5Decoder:
             if lsb_compressed:
                 lsb_data=self.compression.decompress_json(lsb_compressed)
                 result["ai_metadata"]=lsb_data
-                result["auto_features"]=lsb_data.get("auto_features",{})
-                result["user_metadata"]=lsb_data.get("user_metadata",{})
+                # result["auto_features"]=lsb_data.get("auto_features",{})
+                # result["user_metadata"]=lsb_data.get("user_metadata",{})
                 logger.info(f"LSB extraction successful")
             else:
                 logger.warning("LSB layer not found")

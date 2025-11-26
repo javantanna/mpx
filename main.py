@@ -80,10 +80,13 @@ def cmd_decode(args)->int:
             print(f"Original Hash: {info.get('original_hash', '')[:16]}...")
         print()
 
-        if result.get("ai_metadata"):
+        ai_metadata = result.get("ai_metadata", {})
+        if ai_metadata:
             print(f"{Colors.CYAN}Hidden AI Metadata Found:{Colors.RESET}")
-            print(f"  Auto-features: {len(result.get('auto_features', {}))} features")
-            print(f"  User metadata: {len(result.get('user_metadata', {}))} keys")
+            auto_features = ai_metadata.get("auto_features", {})
+            user_metadata = ai_metadata.get("user_metadata", {})
+            print(f"  Auto-features: {len(auto_features)} features")
+            print(f"  User metadata: {len(user_metadata)} keys")
         else:
             print(f"{Colors.YELLOW}⚠ No hidden AI metadata found{Colors.RESET}")
 
