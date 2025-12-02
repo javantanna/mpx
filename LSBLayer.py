@@ -139,18 +139,15 @@ class LSBLayer:
             if total_bits + 32 > bits_per_frame * total_frames:
                     raise EncodingError("Data too large for this video container!")
 
-            # CHANGED FROM THIS 
-            # temp_output=output_path + '.lsb_temp.mp4'
-            # fourcc=cv2.VideoWriter_fourcc(*'mp4v')
-            # TO THIS BELOW
-            temp_output=output_path + '.lsb_temp.avi'
-            fourcc=cv2.VideoWriter_fourcc(*'FFV1')
-            # print(fourcc)
-            out=cv2.VideoWriter(temp_output,fourcc,fps,(width,height))
+            # Use PNG sequence for lossless intermediate storage
+            temp_dir = output_path + "_temp_frames"
+            if not os.path.exists(temp_dir):
+                os.makedirs(temp_dir)
 
             bits_written = 0
             frame_count = 0
             embedded=0
+            
             with click.progressbar(length=total_frames, label='Embedding Stream') as bar:
                 while cap.isOpened():
                     
@@ -159,51 +156,50 @@ class LSBLayer:
                     if not ret:break
                     if bits_written < total_bits:
 
-                        flat_len = frame.size  # Total pixels in this frame
-                        current_pixel_idx = 0  # Start writing at the beginning of the frame
+                        flat_len = frame.size
+                        current_pixel_idx = 0
 
                         # --- FRAME 0 ONLY: WRITE HEADER ---
                         if frame_count==0:
-                            # 1. Embed 32-bit Total Length Header
                             length_bin = format(total_bits, '032b')
-
                             frame=LSBLayer._embed_stream_chunk(frame, length_bin, start_offset=0)
-                            current_pixel_idx = 32 # Move cursor past header
+                            current_pixel_idx = 32
 
                         # --- WRITE DATA BODY ---
-                        # Calculate space left in this frame
                         bits_available=flat_len - current_pixel_idx
-
-                        # Calculate how many bits we can write in this frame
                         bits_needed=total_bits - bits_written
                         bits_to_write=min(bits_available,bits_needed)
 
                         if bits_to_write > 0:
-                            # Slice the chunk from the main payload
                             chunk=data_binary[bits_written : bits_written + bits_to_write]
-
                             frame= LSBLayer._embed_stream_chunk(frame,chunk,current_pixel_idx)
                             bits_written+=bits_to_write
                     
-                    out.write(frame)
+                    # Save as PNG (lossless)
+                    frame_path = os.path.join(temp_dir, f"frame_{frame_count:05d}.png")
+                    cv2.imwrite(frame_path, frame)
+                    
                     frame_count+=1
                     bar.update(1)
             
             cap.release()
-            out.release()
 
-            # So now our mp5 video is ready ***but*** there is no audio in it bcoz cv2.VideoWriter doesn't support audio.
-            # So we need to copy the audio from the original video to our new mp5 video.
-
-            # USING FFMPEG
-            logger.info("Embedding Audio & Converting to H.264 Lossless")
+            # USING FFMPEG with FFV1 (Optimized - Best lossless compression for LSB)
+            logger.info("Embedding Audio & Converting to FFV1 (Optimized)")
             import subprocess
             subprocess.run([
                 'ffmpeg',
-                '-i', temp_output,
+                '-framerate', str(fps),
+                '-i', os.path.join(temp_dir, 'frame_%05d.png'),
                 '-i', video_path,
-                '-c:v', 'copy',
-                '-c:a', 'copy',
+                '-c:v', 'ffv1',         # FFV1 codec (best for lossless)
+                '-level', '3',          # FFV1 version 3 (better compression)
+                '-coder', '1',          # Range coder (better than Golomb-Rice)
+                '-context', '1',        # Large context (better compression, slower)
+                '-g', '1',              # Intra-only (no inter-frame prediction)
+                '-slices', '24',        # More slices for better multi-threading
+                '-slicecrc', '1',       # Error detection
+                '-c:a', 'copy',         # Copy audio
                 '-map', '0:v:0',
                 '-map', '1:a:0?',
                 '-f', 'mp4',
@@ -211,7 +207,11 @@ class LSBLayer:
                 '-loglevel', 'error'
             ])
 
-            os.remove(temp_output)
+            # Cleanup
+            import shutil
+            if os.path.exists(temp_dir):
+                shutil.rmtree(temp_dir)
+            return True
             return True
 
         except Exception as e:

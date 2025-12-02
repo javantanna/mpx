@@ -19,15 +19,15 @@
     },
     "mp5_version": "1.0.0",
     "payload_type": "ai_training_data",
-    "timestamp": "2025-11-26T17:36:38.709566Z",
+    "timestamp": "2025-11-26T18:23:52.682623Z",
     "user_metadata": {
-      "test": "test",
-      "test2": "test2",
-      "test3": "test3"
+      "another_key": "this too",
+      "my_custom_key": "this should remain",
+      "test": "should be filtered"
     }
   },
   "file_info": {
-    "created": "2025-11-26T17:36:38.709566Z",
+    "created": "2025-11-26T18:23:52.682623Z",
     "layers": {
       "atom": {
         "location": "moov.udta.\u00a9mp5"
