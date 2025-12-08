@@ -195,6 +195,3 @@ class FeatureExtractor:
             pass  # Return 0.0s on error
 
         return features
-
-        
-# print(json.dumps(FeatureExtractor.extract_all_features("/Users/javantanna/Code/mp5/input.mp4")))

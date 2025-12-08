@@ -1,5 +1,0 @@
-{
-    "test": "should be filtered",
-    "my_custom_key": "this should remain",
-    "another_key": "this too"
-}

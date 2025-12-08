@@ -29,7 +29,7 @@ class MP5Encoder:
         self,
         video_path: str,
         user_metadata: Dict[str, Any],
-        output_path: str= "output.mp5",
+        output_path: str= "outputs/output.mp5",
         use_lsb: bool = True,
         verify: bool = True
     ) -> Dict[str, Any]:

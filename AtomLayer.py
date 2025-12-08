@@ -55,27 +55,3 @@ class AtomLayer:
             return self.config.atom_tag in video
         except Exception as e:
             return False
-
-    def remove(self,video_path:str)->bool:
-        """Remove metadata from MP5 atom layer"""
-        try:
-            video=MP4(video_path)
-            if self.config.atom_tag in video:
-                del video[self.config.atom_tag]
-                video.save(video_path)
-                logger.info(f"Atom layer removed: {video_path}")
-            
-            return True
-        except Exception as e:
-            raise DecodingError(f"Faild to remove atom layer: {str(e)}")
-
-
-
-# layer=AtomLayer(MP5Config())
-# data=layer.read("/Users/javantanna/Code/mp5/output.mp5")
-# print(data)
-# print(layer.has_metadata("/Users/javantanna/Code/mp5/output.mp5"))
-# print("before remove")
-# print(layer.remove("/Users/javantanna/Code/mp5/output.mp5"))
-# print("after remove")
-# print(layer.has_metadata("/Users/javantanna/Code/mp5/output.mp5"))

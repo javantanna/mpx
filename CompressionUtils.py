@@ -8,16 +8,6 @@ class CompressionUtils:
     """Data compression utilities"""
 
     @staticmethod
-    def compress(data: bytes, level: int = 6) -> bytes:
-        """Compress data using zlib"""
-        return zlib.compress(data, level=level)
-
-    @staticmethod
-    def decompress(data: bytes) -> bytes:
-        """Decompress zlib data"""
-        return zlib.decompress(data)
-
-    @staticmethod
     def compress_json(data: Dict, level: int = 6)->bytes:
         """Compress JSON data"""
         json_str = json.dumps(data,separators=(',',':'), sort_keys=True)
