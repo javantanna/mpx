@@ -41,22 +41,22 @@ class MP5Encoder:
         """
 
         start_time=datetime.now()
-        logger.info(f"Starting encoding process for {video_path}")
+        logger.info(f"🚀 Spinning up encoding for {video_path}")
 
         # Validate Input File
         VideoUtils.validate_video(video_path,self.config)
 
         # Get video info
         video_info=VideoUtils.get_video_info(video_path)
-        logger.info(f"Video info: {video_info['width']}x{video_info['height']}, "
+        logger.info(f"📹 Video specs: {video_info['width']}x{video_info['height']}, "
                    f"{video_info['fps']:.2f} fps, {video_info['duration']:.2f}s")
         
         # Calculate Original hash
-        logger.info("Calculating original hash...")
+        logger.info("🔐 Computing hash (trust but verify)...")
         original_hash=self.hash_utils.hash_file(video_path, chunk_size=self.config.chunk_size)
 
         # AUTO-EXTRACT FEATURES
-        logger.info("\nAuto-extracting video features...")
+        logger.info("\n🧠 Analyzing your video for feature extraction (this is the cool part)...")
         auto_features = self.feature_extractor.extract_all_features(video_path)
 
         # PREPARE ATOM METADATA (Public file info only)
@@ -84,7 +84,7 @@ class MP5Encoder:
             "auto_features": auto_features,  # Auto-generated features
             "user_metadata": user_metadata    # User-provided metadata
         }
-        logger.info("Compressing metadata...")
+        logger.info("📦 Compressing metadata (making it smol)...")
         atom_compressed = self.compression.compress_json(atom_metadata)
         lsb_compressed = self.compression.compress_json(lsb_metadata)
         
@@ -95,14 +95,14 @@ class MP5Encoder:
 
         if use_lsb:
              # Write LSB layer (HIDDEN AI METADATA)
-            logger.info("\nWriting LSB layer (Hidden AI metadata)...")
+            logger.info("\n🔒 Injecting hidden data into pixels (stealth mode)...")
             temp_path = output_path + 'mp5_lsb_temp.mp4'
 
              #TODO: complete from here
             self.lsb_layer.write(video_path, lsb_compressed, temp_path)
             
             # Write in atom Layer (PUBLIC FILE INFO)
-            logger.info("\n writing in Atom Layer")
+            logger.info("\n📝 Writing public metadata (the stuff people can see)")
             self.atom_layer.write(temp_path,atom_compressed,output_path)
             os.remove(temp_path)
 
@@ -116,7 +116,7 @@ class MP5Encoder:
             self.atom_layer.write(video_path, atom_compressed, output_path)
 
         if verify:
-            logger.info("\nVerifying...")
+            logger.info("\n🔍 Double-checking our work...")
             verifier=MP5Verifier(self.config)
 
             verification =verifier.verify(output_path)
@@ -149,7 +149,7 @@ class MP5Encoder:
             "original_hash": original_hash
         }
 
-        logger.info(f"\n✓ Encoding complete in {duration:.2f}s (+{size_increase:.3f}% size)")
+        logger.info(f"\n🎉 Encoding Time {duration:.2f}s (+{size_increase:.1f}% storage, totally worth it)")
 
         return result
             

@@ -11,8 +11,8 @@ from pathlib import Path
 
 
 def print_header():
-    print(f"\n{Colors.CYAN}{Colors.BOLD}MP5 - Enterprise Video Metadata Tool{Colors.RESET}")
-    print(f"{Colors.CYAN}Version 1.0.0 - Auto Feature Extraction{Colors.RESET}\n")
+    print(f"\n{Colors.CYAN}{Colors.BOLD}.mp5 - The #1 AI Video Extension on Earth 🌍{Colors.RESET}")
+    print(f"{Colors.CYAN}.mp4 but on steroids {Colors.RESET}\n")
 
 def cmd_encode(args):
     """Encode video with metadata"""
@@ -38,21 +38,19 @@ def cmd_encode(args):
 
         # Display results
         print_separator()
-        print(f"{Colors.GREEN}{Colors.BOLD}✓ ENCODING SUCCESSFUL{Colors.RESET}")
+        print(f"{Colors.GREEN}{Colors.BOLD}🚀 SHIPPED SUCCESSFULLY{Colors.RESET}")
         print_separator()
         print(f"Output: {result['output_file']}")
-        print(f"Input size:  {result['input_size_mb']:.2f} MB")
-        print(f"Output size: {result['output_size_mb']:.2f} MB")
-        print(f"Size increase: {result['size_increase_percent']:.3f}%")
-        print(f"Encoding time: {result['encoding_time_seconds']:.2f}s")
+        print(f"Size: {result['input_size_mb']:.2f} MB → {result['output_size_mb']:.2f} MB (lossless quality)")
+        print(f"Time: {result['encoding_time_seconds']:.2f}s")
         print(f"Storage: {result['storage_layer']}")
-        print(f"Features extracted: {result['features_extracted']}")
+        print(f"Features auto-extracted: {result['features_extracted']} (you're welcome)")
         print_separator()
         print()
 
         return 0
     except Exception as e:
-        print(f"\n{Colors.RED}✗ Encoding failed: {str(e)}{Colors.RESET}")
+        print(f"\n{Colors.RED}💀 Ship failed: {str(e)}{Colors.RESET}")
         return 1
 
 def cmd_decode(args)->int:
@@ -64,6 +62,10 @@ def cmd_decode(args)->int:
     input_mp5=args[0]
     output_file=None
     
+    # Check if file exists
+    if not Path(input_mp5).exists():
+        print(f"{Colors.RED}❌ File not found: {input_mp5}{Colors.RESET}")
+        return 1
 
     print_header()
 
@@ -74,14 +76,21 @@ def cmd_decode(args)->int:
         result=decoder.decode(input_mp5)
 
         print_separator()
-        print(f"{Colors.GREEN}{Colors.BOLD}✓ DECODING SUCCESSFUL{Colors.RESET}")
+        print(f"{Colors.GREEN}{Colors.BOLD}🔓 SECRETS UNLOCKED{Colors.RESET}")
         print_separator()
 
         if result.get("file_info"):
             info = result["file_info"]#----------
             print(f"MP5 Version: {info.get('mp5_version')}")
-            print(f"Created: {info.get('created')}")
-            print(f"Original Hash: {info.get('original_hash', '')[:16]}...")
+            # Format timestamp
+            created = info.get('created', '')
+            try:
+                dt = datetime.fromisoformat(created.replace('Z', '+00:00'))
+                created = dt.strftime('%b %d, %Y at %I:%M %p')
+            except:
+                pass
+            print(f"Created: {created}")
+            print(f"Original Hash: {info.get('original_hash', '')}")
         print()
 
         ai_metadata = result.get("ai_metadata", {})
@@ -96,9 +105,10 @@ def cmd_decode(args)->int:
 
         print_separator()
         
-        with open("metadata.json", 'w') as f:
+        output_file = "outputs/output_metadata.json"
+        with open(output_file, 'w') as f:
             json.dump(result, f, indent=2)
-        print(f"\nMetadata saved to: {output_file}")
+        print(f"\n📄 Metadata saved to: {output_file}")
 
         print("\nExtracted Data:")
         print(json.dumps(result, indent=2))
@@ -119,6 +129,11 @@ def cmd_verify(args):
     
     input_mp5 = args[0]
     
+    # Check if file exists
+    if not Path(input_mp5).exists():
+        print(f"{Colors.RED}❌ File not found: {input_mp5}{Colors.RESET}")
+        return 1
+    
     print_header()
     
     config = MP5Config()
@@ -131,11 +146,11 @@ def cmd_verify(args):
         
         overall = result['overall']
         if overall == 'verified':
-            print(f"{Colors.GREEN}{Colors.BOLD}✓ VERIFICATION PASSED{Colors.RESET}")
+            print(f"{Colors.GREEN}{Colors.BOLD}✅ INTEGRITY CONFIRMED - We're good{Colors.RESET}")
         elif overall == 'partial':
-            print(f"{Colors.YELLOW}{Colors.BOLD}⚠ PARTIAL VERIFICATION{Colors.RESET}")
+            print(f"{Colors.YELLOW}{Colors.BOLD}⚠️ PARTIAL - Something's sus{Colors.RESET}")
         else:
-            print(f"{Colors.RED}{Colors.BOLD}✗ VERIFICATION FAILED{Colors.RESET}")
+            print(f"{Colors.RED}{Colors.BOLD}❌ BROKEN - Not gonna lie, this is bad{Colors.RESET}")
         
         print_separator()
         print(f"File: {result['file']}")
@@ -152,7 +167,7 @@ def cmd_verify(args):
         return 0 if overall == 'verified' else 1
     
     except Exception as e:
-        print(f"\n{Colors.RED}✗ Verification failed: {str(e)}{Colors.RESET}")
+        print(f"\n{Colors.RED}💀 Verification crashed: {str(e)}{Colors.RESET}")
         return 1
 
 
@@ -165,6 +180,11 @@ def cmd_info(args):
     
     input_mp5 = args[0]
     
+    # Check if file exists
+    if not Path(input_mp5).exists():
+        print(f"{Colors.RED}❌ File not found: {input_mp5}{Colors.RESET}")
+        return 1
+    
     print_header()
     
     config = MP5Config()
@@ -174,7 +194,7 @@ def cmd_info(args):
         result = decoder.decode(input_mp5)
         
         print_separator()
-        print(f"{Colors.CYAN}{Colors.BOLD}MP5 FILE INFORMATION{Colors.RESET}")
+        print(f"{Colors.CYAN}{Colors.BOLD}📊 FILE BREAKDOWN{Colors.RESET}")
         print_separator()
         
         print(f"\n📄 File: {input_mp5}")

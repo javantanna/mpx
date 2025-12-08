@@ -16,7 +16,7 @@ class FeatureExtractor:
     @staticmethod
     def extract_all_features(video_path: str) -> Dict[str, Any]:
         """Extract all features from video"""
-        logger.info("Extracting video features...")
+        logger.info("🔭 Scanning frames like a hawk...")
 
         cap = cv2.VideoCapture(video_path)
 
@@ -133,7 +133,7 @@ class FeatureExtractor:
             audio_features=FeatureExtractor.extract_audio_features(video_path)
             features.update(audio_features)
             
-        logger.info("✓ Feature extraction complete")
+        logger.info("🌟 Features locked and loaded")
         return features
                     
 
@@ -158,7 +158,7 @@ class FeatureExtractor:
     @staticmethod
     def extract_audio_features(video_path:str)->Dict[str, Any]:
         """Extract audio features from video"""
-        logger.info("Extracting audio features...")
+        logger.info("🎵 Listening to the audio vibes...")
         features={
             "volume_rms": 0.0,
             "audio_peak": 0.0,

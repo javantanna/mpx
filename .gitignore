@@ -181,3 +181,4 @@ cython_debug/
 .cursorindexingignore
 /temps
 /outputs
+.DS_Store
