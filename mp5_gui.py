@@ -17,10 +17,10 @@ from datetime import datetime
 import subprocess
 
 # Import MP5 modules
-from MP5Config import MP5Config
-from MP5Encoder import MP5Encoder
-from MP5Decoder import MP5Decoder
-from MP5Verifier import MP5Verifier
+from src.MP5Config import MP5Config
+from src.MP5Encoder import MP5Encoder
+from src.MP5Decoder import MP5Decoder
+from src.MP5Verifier import MP5Verifier
 
 
 class VideoPlayer:

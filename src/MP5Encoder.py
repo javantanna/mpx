@@ -1,15 +1,15 @@
-from AtomLayer import AtomLayer
-from LSBLayer import LSBLayer
-from HashUtils import HashUtils
-from CompressionUtils import CompressionUtils
+from layers.AtomLayer import AtomLayer
+from layers.LSBLayer import LSBLayer
+from utils.HashUtils import HashUtils
+from utils.CompressionUtils import CompressionUtils
 from datetime import datetime
 from typing import Dict, Any
-from VideoUtils import VideoUtils
+from utils.VideoUtils import VideoUtils
 import json
-from Exceptions import IntegrityError
-from FeatureExtractor import FeatureExtractor
-from MP5Config import MP5Config
-from MP5Verifier import MP5Verifier
+from src.Exceptions import IntegrityError
+from utils.FeatureExtractor import FeatureExtractor
+from src.MP5Config import MP5Config
+from src.MP5Verifier import MP5Verifier
 import logging
 import os
 

@@ -1,12 +1,12 @@
 import json
 import sys
 from datetime import datetime
-from LoggingSetup import *
-from MP5Config import MP5Config
-from Exceptions import *
-from MP5Encoder import MP5Encoder  
-from MP5Decoder import MP5Decoder
-from MP5Verifier import MP5Verifier
+from src.LoggingSetup import *
+from src.MP5Config import MP5Config
+from src.Exceptions import *
+from src.MP5Encoder import MP5Encoder  
+from src.MP5Decoder import MP5Decoder
+from src.MP5Verifier import MP5Verifier
 from pathlib import Path
 
 
@@ -38,7 +38,7 @@ def cmd_encode(args):
 
         # Display results
         print_separator()
-        print(f"{Colors.GREEN}{Colors.BOLD}🚀 SHIPPED SUCCESSFULLY{Colors.RESET}")
+        print(f"{Colors.GREEN}{Colors.BOLD}🚀 mp5 MAGIC DONE SUCCESSFULLY{Colors.RESET}")
         print_separator()
         print(f"Output: {result['output_file']}")
         print(f"Size: {result['input_size_mb']:.2f} MB → {result['output_size_mb']:.2f} MB (lossless quality)")

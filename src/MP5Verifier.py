@@ -1,8 +1,8 @@
 import logging
 from datetime import datetime
 from typing import Dict, Any
-from MP5Decoder import MP5Decoder
-from MP5Config import MP5Config
+from src.MP5Decoder import MP5Decoder
+from src.MP5Config import MP5Config
 
 logger = logging.getLogger("mp5")
 

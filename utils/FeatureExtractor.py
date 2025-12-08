@@ -2,7 +2,7 @@ import logging
 import cv2
 import numpy as np
 from typing import Dict, Any
-from ProgressBar import ProgressBar
+from utils.ProgressBar import ProgressBar
 import ffmpeg
 from moviepy import VideoFileClip
 import json

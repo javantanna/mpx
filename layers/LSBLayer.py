@@ -1,9 +1,9 @@
-from MP5Config import MP5Config
+from src.MP5Config import MP5Config
 import logging
 import numpy as np
 import cv2
 import os
-from Exceptions import EncodingError,DecodingError
+from src.Exceptions import EncodingError,DecodingError
 from typing import Optional
 import click
 

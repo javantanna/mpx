@@ -1,9 +1,9 @@
-from CompressionUtils import CompressionUtils
-from AtomLayer import AtomLayer
-from LSBLayer import LSBLayer
+from utils.CompressionUtils import CompressionUtils
+from layers.AtomLayer import AtomLayer
+from layers.LSBLayer import LSBLayer
 import logging
 from typing import Dict, Any, Optional
-from MP5Config import MP5Config
+from src.MP5Config import MP5Config
 
 
 logger = logging.getLogger("mp5")

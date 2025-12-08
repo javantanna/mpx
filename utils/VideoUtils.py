@@ -1,7 +1,7 @@
 import cv2
 from typing import Dict, Any
-from MP5Config import MP5Config
-from Exceptions import ValidationError
+from src.MP5Config import MP5Config
+from src.Exceptions import ValidationError
 from pathlib import Path
 
 class VideoUtils:

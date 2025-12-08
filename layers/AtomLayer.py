@@ -1,7 +1,7 @@
-from MP5Config import MP5Config
+from src.MP5Config import MP5Config
 from mutagen.mp4 import MP4
 from mutagen import MutagenError
-from Exceptions import DecodingError,EncodingError
+from src.Exceptions import DecodingError,EncodingError
 import shutil
 from typing import Optional
 import logging
