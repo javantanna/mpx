@@ -37,7 +37,7 @@ echo ""
 # Step 2: Create virtual environment (.venv)
 # ---------------------------------------------------
 
-if [ -d ".venv" ] then
+if [ -d ".venv" ]; then
     echo -e "${YELLOW}Virtual environment already exists: .venv${NC}"
     echo -e "${YELLOW}Skipping creation...${NC}"
     echo ""
@@ -58,7 +58,7 @@ fi
 
 echo -e "${YELLOW}Installing dependencies from requirements.txt...${NC}"
 
-source venv/bin/activate
+source .venv/bin/activate
 
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
@@ -116,7 +116,7 @@ then
 
         export PATH="/opt/homebrew/bin:$PATH"
 
-    elif [ -d "/usr/local/bin"]
+    elif [ -d "/usr/local/bin" ]
     then
          # Intel mac
         echo -e "${YELLOW}Adding /usr/local/bin to PATH...${NC}"
@@ -150,8 +150,7 @@ echo -e "${YELLOW}This may take a few minutes...${NC}"
 echo ""
 
 brew install ffmpeg
-
-if [$? -eq 0];
+if [ $? -eq 0 ];
 then
     echo ""
     echo -e "${GREEN}FFmpeg installation complete.${NC}"
