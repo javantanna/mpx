@@ -46,7 +46,7 @@ def setup_logging(level:str="INFO",log_file:Optional[str]=None):
     logger.addHandler(console_handler)
 
     if log_file:
-        file_handler=logging.FileHandler(log_file)
+        file_handler=logging.FileHandler(log_file, encoding='utf-8')
         file_handler.setLevel(logging.DEBUG)
         file_formatter = logging.Formatter(
             '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
