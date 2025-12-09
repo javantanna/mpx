@@ -1,8 +1,19 @@
+# MP5 Dependencies
+# Note: tkinter is required but must be installed via system package manager
+# macOS: brew install python-tk@3.14
+# Ubuntu: sudo apt-get install python3-tk
+# Windows: check using python -m tkinter if not installed reinstall python 
+#
+# ffmpeg/ffplay required for video playback (not a Python package):
+# macOS: brew install ffmpeg
+# Ubuntu: sudo apt-get install ffmpeg
+# Windows: download from https://ffmpeg.org/download.html
+
 PyYAML
 mutagen
 numpy
 opencv-python
 click
-# scenedetect
 ffmpeg-python
 moviepy
+Pillow

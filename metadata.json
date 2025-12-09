@@ -1,48 +1,28 @@
 {
-  "ai_metadata": {
-    "auto_features": {
-      "audio_peak": 0.8105010986328125,
-      "blur_score": 389.2620526466559,
-      "camera_shake": 32.70928210263477,
-      "dynamic_range": 256.6542056074766,
-      "edge_density": 0.09218254086916117,
-      "has_audio": true,
-      "letterbox_ratio": 0.0,
-      "motion_intensity": 24.05931626876692,
-      "noise_level": 38.79870076362365,
-      "rule_of_thirds_score": 1.2861849155716558,
-      "scene_cut_count": 2,
-      "silence_ratio": 0.06940426997245179,
-      "static_frame_ratio": 0.9813084112149534,
-      "texture_complexity": 54.95288188065671,
-      "volume_rms": 0.19523825486766339
+    "title": "input.mp4",
+    "author": "Javan Tanna",
+    "description": "A sample video with embedded AI metadata",
+    "tags": [
+        "sample",
+        "demo",
+        "mp5",
+        "ai-generated"
+    ],
+    "category": "entertainment",
+    "license": "Creative Commons",
+    "source": "Original",
+    "ai_model": "Stable Diffusion XL",
+    "ai_version": "1.0",
+    "prompt": "A beautiful sunset over mountains with clouds",
+    "negative_prompt": "blurry, low quality, distorted",
+    "seed": 42,
+    "steps": 50,
+    "cfg_scale": 7.5,
+    "sampler": "DPM++ 2M Karras",
+    "training_data": {
+        "dataset": "custom_landscape_v2",
+        "epochs": 100,
+        "batch_size": 16
     },
-    "mp5_version": "1.0.0",
-    "payload_type": "ai_training_data",
-    "timestamp": "2025-11-26T17:36:38.709566Z",
-    "user_metadata": {
-      "test": "test",
-      "test2": "test2",
-      "test3": "test3"
-    }
-  },
-  "file_info": {
-    "created": "2025-11-26T17:36:38.709566Z",
-    "layers": {
-      "atom": {
-        "location": "moov.udta.\u00a9mp5"
-      }
-    },
-    "mp5_version": "1.0.0",
-    "notes": "AI Metadata stored in lsb layer",
-    "original_hash": "17a57475727dfb006e0523a05be8b6914f5785b627fc0670581d83b4be0a2d51",
-    "video_info": {
-      "codec": 875967080,
-      "duration": 3.5753,
-      "fps": 29.927558526557213,
-      "frame_count": 107,
-      "height": 850,
-      "width": 478
-    }
-  }
+    "NOTE":"This is a sample metadata file for MP5 just for testing purposes. you can use any json just replace metadata.json with your own metadata file"
 }

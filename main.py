@@ -1,14 +1,18 @@
 import json
 import sys
-from LoggingSetup import *
-from MP5Config import MP5Config
-from Exceptions import *
-from MP5Encoder import MP5Encoder  
-from MP5Decoder import MP5Decoder
+from datetime import datetime
+from src.LoggingSetup import *
+from src.MP5Config import MP5Config
+from src.Exceptions import *
+from src.MP5Encoder import MP5Encoder  
+from src.MP5Decoder import MP5Decoder
+from src.MP5Verifier import MP5Verifier
+from pathlib import Path
+
 
 def print_header():
-    print(f"\n{Colors.CYAN}{Colors.BOLD}MP5 - Enterprise Video Metadata Tool{Colors.RESET}")
-    print(f"{Colors.CYAN}Version 1.0.0 - Auto Feature Extraction{Colors.RESET}\n")
+    print(f"\n{Colors.CYAN}{Colors.BOLD}.mp5 - The #1 AI Video Extension on Earth 🌍{Colors.RESET}")
+    print(f"{Colors.CYAN}.mp4 but on steroids {Colors.RESET}\n")
 
 def cmd_encode(args):
     """Encode video with metadata"""
@@ -34,21 +38,19 @@ def cmd_encode(args):
 
         # Display results
         print_separator()
-        print(f"{Colors.GREEN}{Colors.BOLD}✓ ENCODING SUCCESSFUL{Colors.RESET}")
+        print(f"{Colors.GREEN}{Colors.BOLD}🚀 mp5 MAGIC DONE SUCCESSFULLY{Colors.RESET}")
         print_separator()
         print(f"Output: {result['output_file']}")
-        print(f"Input size:  {result['input_size_mb']:.2f} MB")
-        print(f"Output size: {result['output_size_mb']:.2f} MB")
-        print(f"Size increase: {result['size_increase_percent']:.3f}%")
-        print(f"Encoding time: {result['encoding_time_seconds']:.2f}s")
+        print(f"Size: {result['input_size_mb']:.2f} MB → {result['output_size_mb']:.2f} MB (lossless quality)")
+        print(f"Time: {result['encoding_time_seconds']:.2f}s")
         print(f"Storage: {result['storage_layer']}")
-        print(f"Features extracted: {result['features_extracted']}")
+        print(f"Features auto-extracted: {result['features_extracted']} (you're welcome)")
         print_separator()
         print()
 
         return 0
     except Exception as e:
-        print(f"\n{Colors.RED}✗ Encoding failed: {str(e)}{Colors.RESET}")
+        print(f"\n{Colors.RED}💀 Ship failed: {str(e)}{Colors.RESET}")
         return 1
 
 def cmd_decode(args)->int:
@@ -60,6 +62,10 @@ def cmd_decode(args)->int:
     input_mp5=args[0]
     output_file=None
     
+    # Check if file exists
+    if not Path(input_mp5).exists():
+        print(f"{Colors.RED}❌ File not found: {input_mp5}{Colors.RESET}")
+        return 1
 
     print_header()
 
@@ -70,14 +76,21 @@ def cmd_decode(args)->int:
         result=decoder.decode(input_mp5)
 
         print_separator()
-        print(f"{Colors.GREEN}{Colors.BOLD}✓ DECODING SUCCESSFUL{Colors.RESET}")
+        print(f"{Colors.GREEN}{Colors.BOLD}🔓 SECRETS UNLOCKED{Colors.RESET}")
         print_separator()
 
         if result.get("file_info"):
             info = result["file_info"]#----------
             print(f"MP5 Version: {info.get('mp5_version')}")
-            print(f"Created: {info.get('created')}")
-            print(f"Original Hash: {info.get('original_hash', '')[:16]}...")
+            # Format timestamp
+            created = info.get('created', '')
+            try:
+                dt = datetime.fromisoformat(created.replace('Z', '+00:00'))
+                created = dt.strftime('%b %d, %Y at %I:%M %p')
+            except:
+                pass
+            print(f"Created: {created}")
+            print(f"Original Hash: {info.get('original_hash', '')}")
         print()
 
         ai_metadata = result.get("ai_metadata", {})
@@ -92,9 +105,10 @@ def cmd_decode(args)->int:
 
         print_separator()
         
-        with open("metadata.json", 'w') as f:
+        output_file = "outputs/output_metadata.json"
+        with open(output_file, 'w') as f:
             json.dump(result, f, indent=2)
-        print(f"\nMetadata saved to: {output_file}")
+        print(f"\n📄 Metadata saved to: {output_file}")
 
         print("\nExtracted Data:")
         print(json.dumps(result, indent=2))
@@ -105,9 +119,144 @@ def cmd_decode(args)->int:
         print(f"\n{Colors.RED}✗ Decoding failed: {str(e)}{Colors.RESET}")
         return 1
 
-def print_header():
-    print(f"\n{Colors.CYAN}{Colors.BOLD}MP5 - Enterprise Video Metadata Tool{Colors.RESET}")
-    print(f"{Colors.CYAN}Version 1.0.0 - Auto Feature Extraction{Colors.RESET}\n")
+
+def cmd_verify(args):
+    """Verify command"""
+    if len(args) < 1:
+        print("Error: verify requires <input.mp5>")
+        print("Usage: python mp5.py verify input.mp5")
+        return 1
+    
+    input_mp5 = args[0]
+    
+    # Check if file exists
+    if not Path(input_mp5).exists():
+        print(f"{Colors.RED}❌ File not found: {input_mp5}{Colors.RESET}")
+        return 1
+    
+    print_header()
+    
+    config = MP5Config()
+    verifier = MP5Verifier(config)
+    
+    try:
+        result = verifier.verify(input_mp5)
+        
+        print_separator()
+        
+        overall = result['overall']
+        if overall == 'verified':
+            print(f"{Colors.GREEN}{Colors.BOLD}✅ INTEGRITY CONFIRMED - We're good{Colors.RESET}")
+        elif overall == 'partial':
+            print(f"{Colors.YELLOW}{Colors.BOLD}⚠️ PARTIAL - Something's sus{Colors.RESET}")
+        else:
+            print(f"{Colors.RED}{Colors.BOLD}❌ BROKEN - Not gonna lie, this is bad{Colors.RESET}")
+        
+        print_separator()
+        print(f"File: {result['file']}")
+        print(f"LSB Layer: {result['lsb_layer']['status']}")
+        
+        if result['lsb_layer'].get('features_count'):
+            print(f"  Features: {result['lsb_layer']['features_count']}")
+        
+        print(f"Atom Layer: {result['atom_layer']['status']}")
+        print(f"Overall: {overall.upper()}")
+        print_separator()
+        print()
+        
+        return 0 if overall == 'verified' else 1
+    
+    except Exception as e:
+        print(f"\n{Colors.RED}💀 Verification crashed: {str(e)}{Colors.RESET}")
+        return 1
+
+
+def cmd_info(args):
+    """Info command"""
+    if len(args) < 1:
+        print("Error: info requires <input.mp5>")
+        print("Usage: python mp5.py info input.mp5")
+        return 1
+    
+    input_mp5 = args[0]
+    
+    # Check if file exists
+    if not Path(input_mp5).exists():
+        print(f"{Colors.RED}❌ File not found: {input_mp5}{Colors.RESET}")
+        return 1
+    
+    print_header()
+    
+    config = MP5Config()
+    decoder = MP5Decoder(config)
+    
+    try:
+        result = decoder.decode(input_mp5)
+        
+        print_separator()
+        print(f"{Colors.CYAN}{Colors.BOLD}📊 FILE BREAKDOWN{Colors.RESET}")
+        print_separator()
+        
+        print(f"\n📄 File: {input_mp5}")
+        print(f"   Size: {Path(input_mp5).stat().st_size / (1024*1024):.2f} MB")
+        
+        if result.get("file_info"):
+            info = result["file_info"]
+            print(f"\n🔖 MP5 Info:")
+            print(f"   Version: {info.get('mp5_version')}")
+            created_raw = info.get('created', '')
+            try:
+                created_dt = datetime.fromisoformat(created_raw.replace('Z', '+00:00'))
+                created_formatted = created_dt.strftime('%b %d, %Y at %I:%M %p')
+            except:
+                created_formatted = created_raw
+            print(f"   Created: {created_formatted}")
+            print(f"   Hash: {info.get('original_hash')}")
+            
+            if info.get("video_info"):
+                vi = info["video_info"]
+                print(f"\n🎬 Video:")
+                print(f"   Resolution: {vi['width']}x{vi['height']}")
+                print(f"   FPS: {vi['fps']:.2f}")
+                print(f"   Duration: {vi['duration']:.2f}s")
+                print(f"   Frames: {vi['frame_count']}")
+        
+        if result.get("ai_metadata"):
+            print(f"\n🤖 AI Metadata (Hidden in LSB):")
+            print(f"   Storage: LSB Steganography")
+            print(f"   Payload Type: {result['ai_metadata'].get('payload_type')}")
+            
+            if result.get("auto_features"):
+                print(f"\n📊 Auto-Extracted Features ({len(result['auto_features'])}):")
+                features = result['auto_features']
+                
+                # Display key features
+                print(f"   Blur Score: {features.get('blur_score', 0):.2f}")
+                print(f"   Edge Density: {features.get('edge_density', 0):.4f}")
+                print(f"   Motion Intensity: {features.get('motion_intensity', 0):.2f}")
+                print(f"   Scene Cuts: {features.get('scene_cut_count', 0)}")
+                print(f"   Static Frames: {features.get('static_frame_ratio', 0):.2%}")
+                print(f"   Compression Artifacts: {features.get('compression_artifacts', 0):.4f}")
+            
+            if result.get("user_metadata"):
+                print(f"\n💾 User Metadata:")
+                user_meta = result['user_metadata']
+                if len(json.dumps(user_meta)) > 200:
+                    print(f"   {json.dumps(user_meta, indent=2)[:200]}...")
+                else:
+                    print(f"   {json.dumps(user_meta, indent=2)}")
+        
+        print(f"\n{Colors.RESET}")
+        print_separator()
+        print()
+        
+        return 0
+    
+    except Exception as e:
+        print(f"\n{Colors.RED}✗ Error: {str(e)}{Colors.RESET}")
+        return 1
+
+
 
 
 def print_separator():
@@ -165,17 +314,26 @@ def main():
 
     try:
         if command == "encode":
-            cmd_encode(args)
+            return cmd_encode(args)
         elif command == "decode":
-            cmd_decode(args)
-        # elif command == "verify":
-        
+            return cmd_decode(args)
+        elif command == "verify":
+            return cmd_verify(args)
+        elif command == "info":
+            return cmd_info(args)
+        elif command == "help":
+            show_help()
         else:
             raise ValidationError(f"Invalid command: {command}",{"Expected commands": "encode, decode, verify"})
 
+    except KeyboardInterrupt:
+        print("\n\nInterrupted by user")
+        return 130
     except Exception as e:
-        logger.error(f"Error: {str(e)}")
-        sys.exit(1)
+        print(f"\n{Colors.RED}Error: {str(e)}{Colors.RESET}")
+        import traceback
+        traceback.print_exc()
+        return 1
 
 
 if __name__ == "__main__":
