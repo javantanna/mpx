@@ -11,7 +11,7 @@ from pathlib import Path
 
 
 def print_header():
-    print(f"\n{Colors.CYAN}{Colors.BOLD}.mp5 - The #1 AI Video Extension on Earth 🌍{Colors.RESET}")
+    print(f"\n{Colors.CYAN}{Colors.BOLD}.mp5 - The BEST AI Video Format on Earth 🌍{Colors.RESET}")
     print(f"{Colors.CYAN}.mp4 but on steroids {Colors.RESET}\n")
 
 def cmd_encode(args):
