@@ -2,7 +2,7 @@
 
 # .MP5 
 #### *The BEST AI Video Format on Earth 🌍*
-mp4 but on steroids
+
 
 ---
 
@@ -10,7 +10,7 @@ mp4 but on steroids
 <img src="assets/logo.jpg" alt="MP5 Logo" width="200"/>
 
 **Version 1.0.0** | **License Apache 2.0** | **Cross-platform**
-
+mp4 but on steroids
 
 
 
