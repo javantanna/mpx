@@ -72,10 +72,9 @@ MP4 was designed in the early 2000s. Back then, video was simple: you encoded it
 Here's what happens in a typical AI video workflow today:
 
 1. **You generate or download a video** → Gets saved as `video.mp4`
-2. **You need to store metadata** (prompt, model, seed, parameters) → Create `metadata.json`
-3. **You extract features** (blur, motion, audio) → Save to `features.csv`
-4. **You track training data** → Add entry to database
-5. **You move the video** → Now you have 4 systems to keep in sync
+2. **You need to store metadata and features** (prompt, model, seed, parameters) → Create `metadata.json`
+
+5. **You move the video** → Now you have 2 systems to keep in sync
 
 This is fragile. When you're working with 100 videos, it's annoying. When you're working with 100,000 videos, it's broken.
 
@@ -84,7 +83,6 @@ This is fragile. When you're working with 100 videos, it's annoying. When you're
 - **Files get separated.** You download a dataset, but the metadata is in a different repo. Good luck matching them.
 - **Features get recomputed.** Every tool re-analyzes the same video because nothing's stored with it.
 - **Metadata gets lost.** Move files between systems, and suddenly you don't know which model generated what.
-- **Databases go stale.** Video gets updated, database doesn't. Now nothing matches.
 - **Sharing is painful.** Want to send someone a video with context? You're zipping 5 files and writing a README.
 
 And the big one: **this doesn't scale.** You can't build reliable AI infrastructure on top of a system where the data and metadata live in completely different places.
@@ -121,7 +119,7 @@ MP5 is built on **FFV1** (a lossless codec) inside an **MP4 container**. Every m
 │  ├─ moov/udta/MP5M Atom ────────────┼──► Public metadata (version, hash, timestamps)
 │  └─ Video Stream (FFV1 codec)       │
 │     └─ LSB Layer (hidden) ──────────┼──► AI features, training data, user metadata
-│                                      │
+│                                     │
 └─────────────────────────────────────┘
          ↓                    ↓
    Normal Player          AI Tool
@@ -134,7 +132,7 @@ Zero external dependencies. Zero sync issues. Zero broken links.
 
 ---
 
-## 🪄 The Magic (How We Hide Data in Plain Sight)
+## 🪄 THE REAL MAGIC HAPPENS HERE!
 
 Here's how MP5 stores AI metadata invisibly. It's simpler than you think.
 
@@ -234,7 +232,6 @@ Every MP5 file automatically gets analyzed. Here's what we extract:
 | **Quality** | ⚠️ Usually lossy (H.264) | ✅ Lossless (FFV1) |
 | **AI Metadata** | ❌ None | ✅ Built-in (dual-layer) |
 | **Auto Features** | ❌ Reprocess every time | ✅ Extracted once, stored forever |
-| **File Size** | Smaller (lossy) | +5-15% (lossless + metadata) |
 | **Use Case** | Streaming, YouTube | AI training, datasets, archival |
 | **External Files** | ❌ Metadata separate | ✅ Self-contained |
 | **Verification** | ❌ None | ✅ SHA-256 hash + tamper detection |
@@ -388,7 +385,6 @@ python main.py encode video.mp4 metadata.json
 # Output:
 # 🚀 mp5 MAGIC DONE SUCCESSFULLY
 # Output: outputs/output.mp5
-# Size: 45.2 MB → 48.7 MB (lossless quality)
 # Features auto-extracted: 15 (you're welcome)
 
 # 4. Six months later, you forgot what this video was
@@ -513,37 +509,37 @@ Here's how MP5 files are actually structured and how the dual-layer system works
 ┌─────────────────────────────────────────────────────────┐
 │               MP5 File (MP4 Container)                  │
 ├─────────────────────────────────────────────────────────┤
-│                                                          │
+│                                                         │
 │  Layer 1: MP4 Atom Structure (Public Metadata)          │
-│  ┌────────────────────────────────────────────┐        │
+│  ┌─────────────────────────────────────────────┐        │
 │  │ moov                                        │        │
 │  │  └── udta (User Data)                       │        │
-│  │       └── ©mp5 (Custom MP5 Atom)           │◄───────┼─── Public metadata
+│  │       └── ©mp5 (Custom MP5 Atom)            │◄───────┼─── Public metadata
 │  │            ├─ version: "1.0.0"              │        │    • Version
 │  │            ├─ created: timestamp            │        │    • Timestamp
 │  │            ├─ original_hash: SHA-256        │        │    • Hash
 │  │            ├─ video_info: specs             │        │    • Video specs
 │  │            └─ notes: "AI data in LSB"       │        │
-│  └────────────────────────────────────────────┘        │
-│                                                          │
+│  └─────────────────────────────────────────────┘        │
+│                                                         │
 │  Layer 2: Video Stream (LSB Steganography Layer)        │
-│  ┌────────────────────────────────────────────┐        │
-│  │ FFV1 Lossless Video Codec                  │        │
-│  │                                              │        │
-│  │  Frame 0:                                    │        │
-│  │  ┌─────────────────────────────────┐       │        │
-│  │  │ Pixels 0-31: Header (32 bits)    │◄──────┼────────┼─── LSB Header
-│  │  │  → Data length in binary         │       │        │    (32-bit length)
-│  │  │                                   │       │        │
-│  │  │ Pixels 32+: Compressed JSON Data │◄──────┼────────┼─── Hidden AI metadata
-│  │  │  → auto_features                 │       │        │    • Auto features
-│  │  │  → user_metadata                 │       │        │    • User metadata
-│  │  │  → training_data                 │       │        │    • Training data
-│  │  └─────────────────────────────────┘       │        │
-│  │                                              │        │
-│  │  Frame 1+: Continuation of data...          │        │
-│  └────────────────────────────────────────────┘        │
-│                                                          │
+│  ┌────────────────────────────────────────────┐         │
+│  │ FFV1 Lossless Video Codec                  │         │
+│  │                                            │         │
+│  │  Frame 0:                                  │         │
+│  │  ┌──────────────────────────────────┐      │         │
+│  │  │ Pixels 0-31: Header (32 bits)    │◄─────┼─────────┼─── LSB Header
+│  │  │  → Data length in binary         │      │         │    (32-bit length)
+│  │  │                                  │      │         │
+│  │  │ Pixels 32+: Compressed JSON Data │◄─────┼─────────┼─── Hidden AI metadata
+│  │  │  → auto_features                 │      │         │    • Auto features
+│  │  │  → user_metadata                 │      │         │    • User metadata
+│  │  │  → training_data                 │      │         │    • Training data
+│  │  └──────────────────────────────────┘      │         │
+│  │                                            │         │
+│  │  Frame 1+: Continuation of data...         │         │
+│  └────────────────────────────────────────────┘         │
+│                                                         │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -554,7 +550,7 @@ Here's how MP5 files are actually structured and how the dual-layer system works
 ```
 Bit Position:  0                               31
                ├────────────────────────────────┤
-               │   32-bit Binary Length Value    │
+               │   32-bit Binary Length Value   │
                └────────────────────────────────┘
                         ↓
             Example: 00000000000000010010110100000000
@@ -671,7 +667,7 @@ Input MP4 Video
 │ 4. LSB Embedding                      │
 │    - Frame 0: Write 32-bit header     │
 │    - Frames 0+: Write data bits       │
-│    - Each pixel LSB = 1 data bit      │
+│    - Each pixel LSB = 3 data bit      │
 └───────────────────────────────────────┘
     ↓
 ┌───────────────────────────────────────┐
@@ -776,7 +772,7 @@ Look, if you see something that could be better, just fix it. That's how we buil
 
 ```bash
 # Fork it
-git clone https://github.com/your-username/mp5.git
+git clone https://github.com/javantanna/mp5.git
 cd mp5
 
 # Make a branch
@@ -806,5 +802,9 @@ Then open a Pull Request. We'll review it and merge if it makes MP5 better.
 The code doesn't have to be perfect. If it solves a real problem, we can work together to polish it.
 
 That's it. Thanks for building with us.
+
+## 📜 License
+
+This project is released under the Apache 2.0 License. See the LICENSE file for details.
 
 ---
