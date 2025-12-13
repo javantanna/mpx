@@ -1,30 +1,19 @@
 <div align="center">
 
 # .MPX 
-# .MPX 
 #### *The BEST AI Video Format on Earth 🌍*
 mp4 but on steroids
 
 ---
 
-<<<<<<< Updated upstream
-<img src="assets/logo.jpg" alt="MP5 Logo" width="200"/>
-=======
-
 <img src="assets/logo.jpg" alt="MPX Logo" width="200"/>
->>>>>>> Stashed changes
 
 **Version 1.0.0** | **License Apache 2.0** | **Cross-platform**
-
-
-
-
 
 </div>
 
 ---
 
-## 📖 What Is MPX?
 ## 📖 What Is MPX?
 
 Here's the thing. We've been using MP4 for videos for like 20 years. It works. But it was built for a different era—when videos were just for people to watch.
@@ -34,21 +23,17 @@ Now we're training AI models on millions of videos. And every video needs metada
 So where do you put that data? In a separate file? In a database? That's a mess. Files get lost. Databases get out of sync. It breaks.
 
 **MPX fixes this.**
-**MPX fixes this.**
 
 It's a video format that stores everything—the video AND all its AI metadata—in one single file. Hidden. Lossless. Automatically extracted.
 
-Think of it like this: MP4 stores the video. MPX stores the video plus everything an AI needs to understand it.
 Think of it like this: MP4 stores the video. MPX stores the video plus everything an AI needs to understand it.
 
 Same compatibility. Same playback. But actually useful for the AI age.
 
 That's it. That's MPX.
-That's it. That's MPX.
 
 ---
 
-## 🔮 The Vision (Why MPX Exists)
 ## 🔮 The Vision (Why MPX Exists)
 
 We're at the start of something big with AI and video. In the next few years, we'll be training models on billions of videos. Building systems that understand scenes in real-time. Creating experiences we can't predict yet.
@@ -60,7 +45,6 @@ Right now, working with video for AI is broken. You've got the video file in one
 That doesn't scale. And it blocks the innovation we need.
 
 **MPX fixes this by making video intelligent by default.**
-**MPX fixes this by making video intelligent by default.**
 
 Every video knows what it is. Metadata travels with the file automatically. AI features are extracted once and embedded forever. Everything self-contained. No external dependencies.
 
@@ -70,7 +54,6 @@ When you have millions of videos with perfect metadata built-in, you unlock thin
 
 This is infrastructure work. Not flashy. But it's the foundation for everything else.
 
-That's why MPX exists.
 That's why MPX exists.
 
 ---
@@ -85,8 +68,7 @@ Here's what happens in a typical AI video workflow today:
 
 1. **You generate or download a video** → Gets saved as `video.mp4`
 2. **You need to store metadata and features** (prompt, model, seed, parameters) → Create `metadata.json`
-
-5. **You move the video** → Now you have 2 systems to keep in sync
+3. **You move the video** → Now you have 2 systems to keep in sync
 
 This is fragile. When you're working with 100 videos, it's annoying. When you're working with 100,000 videos, it's broken.
 
@@ -102,29 +84,23 @@ And the big one: **this doesn't scale.** You can't build reliable AI infrastruct
 MP4 was great for what it was built for. But we need something designed for how we actually work with video today.
 
 That's the problem MPX solves.
-That's the problem MPX solves.
 
 ---
 
 ## 🔄 MPX Works Everywhere (Seriously)
-## 🔄 MPX Works Everywhere (Seriously)
 
-The whole point is that you don't need new infrastructure. MPX files are valid MP4 files. They play in everything that plays MP4. No conversion. No special players. No hassle.
 The whole point is that you don't need new infrastructure. MPX files are valid MP4 files. They play in everything that plays MP4. No conversion. No special players. No hassle.
 
 | What You Want To Do | How It Works | What You Get |
 |---------------------|--------------|--------------|
 | **Watch the video** | Drop into VLC/QuickTime/Chrome | Plays normally, metadata stays hidden |
 | **Share with colleagues** | Send the `.mpx` file (or rename to `.mp4`) | They watch it like any video |
-| **Share with colleagues** | Send the `.mpx` file (or rename to `.mp4`) | They watch it like any video |
 | **Upload to cloud** | S3, GCS, Dropbox—doesn't matter | Stores like MP4, metadata intact |
 | **Use in AI pipeline** | Load with OpenCV/PyTorch/TensorFlow | Reads video + extracts embedded metadata |
-| **Train ML models** | Point your training script at `.mpx` files | Gets features without reprocessing |
 | **Train ML models** | Point your training script at `.mpx` files | Gets features without reprocessing |
 
 ### The Technical Reality
 
-MPX is built on **FFV1** (a lossless codec) inside an **MP4 container**. Every modern video player already supports this. We're not inventing anything wild—we're using battle-tested tech in a smarter way.
 MPX is built on **FFV1** (a lossless codec) inside an **MP4 container**. Every modern video player already supports this. We're not inventing anything wild—we're using battle-tested tech in a smarter way.
 
 **Two metadata layers working together:**
@@ -132,10 +108,8 @@ MPX is built on **FFV1** (a lossless codec) inside an **MP4 container**. Every m
 ```
 ┌─────────────────────────────────────┐
 │         MPX File Structure          │
-│         MPX File Structure          │
 ├─────────────────────────────────────┤
 │  MP4 Container (Universal format)   │
-│  ├─ moov/udta/MPXM Atom ────────────┼──► Public metadata (version, hash, timestamps)
 │  ├─ moov/udta/MPXM Atom ────────────┼──► Public metadata (version, hash, timestamps)
 │  └─ Video Stream (FFV1 codec)       │
 │     └─ LSB Layer (hidden) ──────────┼──► AI features, training data, user metadata
@@ -154,7 +128,6 @@ Zero external dependencies. Zero sync issues. Zero broken links.
 
 ## 🪄 THE REAL MAGIC HAPPENS HERE!
 
-Here's how MPX stores AI metadata invisibly. It's simpler than you think.
 Here's how MPX stores AI metadata invisibly. It's simpler than you think.
 
 ### The Steganography Process
@@ -191,14 +164,12 @@ Do this for every color channel of every pixel, and we can hide **6.2 million bi
 
 **Layer 1: Atom Metadata (Public)**
 - Lives in MP4's standard metadata structure (`moov/udta/MPXM`)
-- Lives in MP4's standard metadata structure (`moov/udta/MPXM`)
 - Stores: version, timestamp, hash, video specs
 - Any MP4 tool can read this
 
 **Layer 2: LSB Metadata (Hidden)**
 - Embedded in pixel data using steganography
 - Stores: AI features, training data, prompts, parameters
-- Only MPX decoder extracts this
 - Only MPX decoder extracts this
 
 ### Why This Works
@@ -233,7 +204,6 @@ The file is the database. That's the magic.
 ## 📊 Auto-Extracted Features
 
 Every MPX file automatically gets analyzed. Here's what we extract:
-Every MPX file automatically gets analyzed. Here's what we extract:
 
 | Category | Features | What It Measures |
 |----------|----------|------------------|
@@ -249,9 +219,7 @@ Every MPX file automatically gets analyzed. Here's what we extract:
 ---
 
 ## 🆚 MPX vs MP4 (Comparison Table)
-## 🆚 MPX vs MP4 (Comparison Table)
 
-| Feature | MP4 | MPX |
 | Feature | MP4 | MPX |
 |---------|-----|-----|
 | **Playback** | ✅ Universal | ✅ Universal (same players) |
@@ -263,7 +231,6 @@ Every MPX file automatically gets analyzed. Here's what we extract:
 | **Verification** | ❌ None | ✅ SHA-256 hash + tamper detection |
 | **Training Data** | ❌ Manual tracking | ✅ Embedded in file |
 
-**Bottom line:** MP4 is for watching. MPX is for building AI.
 **Bottom line:** MP4 is for watching. MPX is for building AI.
 
 ---
@@ -297,8 +264,6 @@ Embed invisible watermarks and ownership data. Verify authenticity and track vid
 ```bash
 git clone https://github.com/javantanna/mpx.git
 cd mpx
-git clone https://github.com/javantanna/mpx.git
-cd mpx
 chmod +x macos_setup.sh
 ./macos_setup.sh
 ```
@@ -307,16 +272,12 @@ chmod +x macos_setup.sh
 ```bash
 git clone https://github.com/javantanna/mpx.git
 cd mpx
-git clone https://github.com/javantanna/mpx.git
-cd mpx
 chmod +x linux_setup.sh
 ./linux_setup.sh
 ```
 
 **Windows:**
 ```powershell
-git clone https://github.com/javantanna/mpx.git
-cd mpx
 git clone https://github.com/javantanna/mpx.git
 cd mpx
 .\windows_setup.ps1
@@ -353,7 +314,6 @@ python main.py encode input.mp4 metadata.json
 ```
 
 **Done.** Your MPX file is in `outputs/output.mpx` with all metadata embedded.
-**Done.** Your MPX file is in `outputs/output.mpx` with all metadata embedded.
 
 ---
 
@@ -368,13 +328,11 @@ Auto-extracts features, embeds metadata, verifies integrity.
 **Decode metadata:**
 ```bash
 python main.py decode <file.mpx>
-python main.py decode <file.mpx>
 ```
 Extracts hidden AI metadata to `outputs/output_metadata.json`.
 
 **Verify integrity:**
 ```bash
-python main.py verify <file.mpx>
 python main.py verify <file.mpx>
 ```
 Checks LSB layer, atom layer, and hash verification.
@@ -382,13 +340,11 @@ Checks LSB layer, atom layer, and hash verification.
 **Get file info:**
 ```bash
 python main.py info <file.mpx>
-python main.py info <file.mpx>
 ```
 Shows all metadata, features, and technical specs.
 
 **GUI Version:**
 ```bash
-python mpx_gui.py
 python mpx_gui.py
 ```
 Drag-and-drop interface with real-time feature preview.
@@ -423,12 +379,9 @@ python main.py encode video.mp4 metadata.json
 # Output:
 # 🚀 mpx MAGIC DONE SUCCESSFULLY
 # Output: outputs/output.mpx
-# 🚀 mpx MAGIC DONE SUCCESSFULLY
-# Output: outputs/output.mpx
 # Features auto-extracted: 15 (you're welcome)
 
 # 4. Six months later, you forgot what this video was
-python main.py decode outputs/output.mpx
 python main.py decode outputs/output.mpx
 
 # Output shows exact parameters:
@@ -446,9 +399,7 @@ python main.py decode outputs/output.mpx
 ---
 
 ## 🎬 Playing MPX Files (Optional Setup)
-## 🎬 Playing MPX Files (Optional Setup)
 
-MPX files are valid MP4 files. You have **two options** to play them:
 MPX files are valid MP4 files. You have **two options** to play them:
 
 ### Option 1: Quick & Easy (Rename to .mp4)
@@ -456,7 +407,6 @@ MPX files are valid MP4 files. You have **two options** to play them:
 Just rename the file extension:
 
 ```bash
-mv video.mpx video.mp4
 mv video.mpx video.mp4
 ```
 
@@ -467,42 +417,35 @@ mv video.mpx video.mp4
 
 **Cons:**
 - ⚠️ Need to rename back to `.mpx` to use MPX decoder
-- ⚠️ Need to rename back to `.mpx` to use MPX decoder
 
 ---
 
 ### Option 2: File Association (Recommended for Frequent Use)
 
 Set up `.mpx` files to automatically open in VLC Media Player.
-Set up `.mpx` files to automatically open in VLC Media Player.
 
 **macOS:**
 ```bash
-./associate_mpx_macos.sh
 ./associate_mpx_macos.sh
 ```
 
 **Linux:**
 ```bash
 ./associate_mpx_linux.sh
-./associate_mpx_linux.sh
 ```
 
 **Windows:**
 ```powershell
 .\associate_mpx_windows.ps1
-.\associate_mpx_windows.ps1
 ```
 
 **What this does:**
-- Registers `.mpx` as a known file type
 - Registers `.mpx` as a known file type
 - Associates it with VLC Media Player
 - Double-click to play (metadata stays hidden)
 - No renaming needed
 
 **After setup:**
-- Double-click any `.mpx` file → Opens in VLC automatically
 - Double-click any `.mpx` file → Opens in VLC automatically
 - Video plays normally, AI metadata invisible to VLC
 - Use `python main.py decode` to extract metadata anytime
@@ -512,14 +455,11 @@ Set up `.mpx` files to automatically open in VLC Media Player.
 ```bash
 # macOS
 ./revert_mpx_association_macos.sh
-./revert_mpx_association_macos.sh
 
 # Linux
 ./revert_mpx_association_linux.sh
-./revert_mpx_association_linux.sh
 
 # Windows
-.\revert_mpx_association_windows.ps1
 .\revert_mpx_association_windows.ps1
 ```
 
@@ -528,14 +468,11 @@ Removes the association and cleans up dependencies. After reverting, use Option 
 ---
 
 ### Option 3: Use MPX GUI (All-in-One)
-### Option 3: Use MPX GUI (All-in-One)
 
-Launch the MPX GUI for a complete video management experience:
 Launch the MPX GUI for a complete video management experience:
 
 ```bash
 source .venv/bin/activate  # Activate environment first
-python mpx_gui.py
 python mpx_gui.py
 ```
 
@@ -550,8 +487,6 @@ python mpx_gui.py
 **Best for:**
 - Viewing MPX files with all metadata visible
 - Managing multiple MPX files
-- Viewing MPX files with all metadata visible
-- Managing multiple MPX files
 - Quick verification and feature inspection
 
 **No file association needed** - The GUI handles everything.
@@ -559,9 +494,7 @@ python mpx_gui.py
 ---
 
 ## 🏗️ The MPX Architecture
-## 🏗️ The MPX Architecture
 
-Here's how MPX files are actually structured and how the dual-layer system works.
 Here's how MPX files are actually structured and how the dual-layer system works.
 
 ### File Structure Overview
@@ -569,14 +502,12 @@ Here's how MPX files are actually structured and how the dual-layer system works
 ```
 ┌─────────────────────────────────────────────────────────┐
 │               MPX File (MP4 Container)                  │
-│               MPX File (MP4 Container)                  │
 ├─────────────────────────────────────────────────────────┤
 │                                                         │
 │  Layer 1: MP4 Atom Structure (Public Metadata)          │
 │  ┌─────────────────────────────────────────────┐        │
 │  │ moov                                        │        │
 │  │  └── udta (User Data)                       │        │
-│  │       └── ©mpx (Custom MPX Atom)            │◄───────┼─── Public metadata
 │  │       └── ©mpx (Custom MPX Atom)            │◄───────┼─── Public metadata
 │  │            ├─ version: "1.0.0"              │        │    • Version
 │  │            ├─ created: timestamp            │        │    • Timestamp
@@ -650,11 +581,9 @@ Bit Position:  0                               31
       "volume_rms": 0.031494140625
     },
     "mpx_version": "1.0.0",
-    "mpx_version": "1.0.0",
     "payload_type": "ai_training_data",
     "timestamp": "2025-12-09T01:01:24.745920Z",
     "user_metadata": {
-      "NOTE": "This is a sample metadata file for MPX just for testing purposes. you can use any json just replace metadata.json with your own metadata file",
       "NOTE": "This is a sample metadata file for MPX just for testing purposes. you can use any json just replace metadata.json with your own metadata file",
       "ai_model": "Stable Diffusion XL",
       "ai_version": "1.0",
@@ -673,7 +602,6 @@ Bit Position:  0                               31
         "sample",
         "demo",
         "mpx",
-        "mpx",
         "ai-generated"
       ],
       "title": "input.mp4",
@@ -689,10 +617,8 @@ Bit Position:  0                               31
     "layers": {
       "atom": {
         "location": "moov.udta.\u00a9mpx"
-        "location": "moov.udta.\u00a9mpx"
       }
     },
-    "mpx_version": "1.0.0",
     "mpx_version": "1.0.0",
     "notes": "AI Metadata stored in lsb layer",
     "original_hash": "906a9076671cb27c29e574e68a324b2fc0b01affed8375bba7307fdfaa80321c",
@@ -749,7 +675,6 @@ Input MP4 Video
 │ 6. Write Atom Metadata                │
 │    - Add public metadata to MP4 atoms │
 │    - Store in moov/udta/©mpx          │
-│    - Store in moov/udta/©mpx          │
 └───────────────────────────────────────┘
     ↓
 ┌───────────────────────────────────────┐
@@ -760,18 +685,15 @@ Input MP4 Video
 └───────────────────────────────────────┘
     ↓
 Output MPX File
-Output MPX File
 ```
 
 ### Decoding Flow
 
 ```
 Input MPX File
-Input MPX File
     ↓
 ┌───────────────────────────────────────┐
 │ 1. Read Atom Layer                    │
-│    - Extract moov/udta/©mpx atom      │
 │    - Extract moov/udta/©mpx atom      │
 │    - Decompress → Get file info       │
 └───────────────────────────────────────┘
@@ -800,7 +722,6 @@ Input MPX File
 │    - Return complete metadata         │
 └───────────────────────────────────────┘
     ↓
-Output: Complete MPX Metadata
 Output: Complete MPX Metadata
 ```
 
@@ -840,14 +761,11 @@ Look, if you see something that could be better, just fix it. That's how we buil
 
 **Found a bug or have an idea?**  
 [Open an issue](https://github.com/javantanna/mpx/issues). Tell us what's broken or what you want to build.
-[Open an issue](https://github.com/javantanna/mpx/issues). Tell us what's broken or what you want to build.
 
 **Want to write code?**
 
 ```bash
 # Fork it
-git clone https://github.com/javantanna/mpx.git
-cd mpx
 git clone https://github.com/javantanna/mpx.git
 cd mpx
 
@@ -860,14 +778,12 @@ git checkout -b feature/your-thing
 # Test it
 python main.py encode test.mp4 metadata.json
 python main.py verify outputs/output.mpx
-python main.py verify outputs/output.mpx
 
 # Ship it
 git commit -m "Add: what you built"
 git push origin feature/your-thing
 ```
 
-Then open a Pull Request. We'll review it and merge if it makes MPX better.
 Then open a Pull Request. We'll review it and merge if it makes MPX better.
 
 **What we need help with:**
