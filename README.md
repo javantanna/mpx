@@ -1,12 +1,17 @@
 <div align="center">
 
-# .MP5 
+# .MPX 
 #### *The BEST AI Video Format on Earth 🌍*
 mp4 but on steroids
 
 ---
 
+<<<<<<< Updated upstream
 <img src="assets/logo.jpg" alt="MP5 Logo" width="200"/>
+=======
+
+<img src="assets/logo.jpg" alt="MPX Logo" width="200"/>
+>>>>>>> Stashed changes
 
 **Version 1.0.0** | **License Apache 2.0** | **Cross-platform**
 
@@ -18,7 +23,7 @@ mp4 but on steroids
 
 ---
 
-## 📖 What Is MP5?
+## 📖 What Is MPX?
 
 Here's the thing. We've been using MP4 for videos for like 20 years. It works. But it was built for a different era—when videos were just for people to watch.
 
@@ -26,19 +31,19 @@ Now we're training AI models on millions of videos. And every video needs metada
 
 So where do you put that data? In a separate file? In a database? That's a mess. Files get lost. Databases get out of sync. It breaks.
 
-**MP5 fixes this.**
+**MPX fixes this.**
 
 It's a video format that stores everything—the video AND all its AI metadata—in one single file. Hidden. Lossless. Automatically extracted.
 
-Think of it like this: MP4 stores the video. MP5 stores the video plus everything an AI needs to understand it.
+Think of it like this: MP4 stores the video. MPX stores the video plus everything an AI needs to understand it.
 
 Same compatibility. Same playback. But actually useful for the AI age.
 
-That's it. That's MP5.
+That's it. That's MPX.
 
 ---
 
-## 🔮 The Vision (Why MP5 Exists)
+## 🔮 The Vision (Why MPX Exists)
 
 We're at the start of something big with AI and video. In the next few years, we'll be training models on billions of videos. Building systems that understand scenes in real-time. Creating experiences we can't predict yet.
 
@@ -48,7 +53,7 @@ Right now, working with video for AI is broken. You've got the video file in one
 
 That doesn't scale. And it blocks the innovation we need.
 
-**MP5 fixes this by making video intelligent by default.**
+**MPX fixes this by making video intelligent by default.**
 
 Every video knows what it is. Metadata travels with the file automatically. AI features are extracted once and embedded forever. Everything self-contained. No external dependencies.
 
@@ -58,7 +63,7 @@ When you have millions of videos with perfect metadata built-in, you unlock thin
 
 This is infrastructure work. Not flashy. But it's the foundation for everything else.
 
-That's why MP5 exists.
+That's why MPX exists.
 
 ---
 
@@ -88,34 +93,34 @@ And the big one: **this doesn't scale.** You can't build reliable AI infrastruct
 
 MP4 was great for what it was built for. But we need something designed for how we actually work with video today.
 
-That's the problem MP5 solves.
+That's the problem MPX solves.
 
 ---
 
-## 🔄 MP5 Works Everywhere (Seriously)
+## 🔄 MPX Works Everywhere (Seriously)
 
-The whole point is that you don't need new infrastructure. MP5 files are valid MP4 files. They play in everything that plays MP4. No conversion. No special players. No hassle.
+The whole point is that you don't need new infrastructure. MPX files are valid MP4 files. They play in everything that plays MP4. No conversion. No special players. No hassle.
 
 | What You Want To Do | How It Works | What You Get |
 |---------------------|--------------|--------------|
 | **Watch the video** | Drop into VLC/QuickTime/Chrome | Plays normally, metadata stays hidden |
-| **Share with colleagues** | Send the `.mp5` file (or rename to `.mp4`) | They watch it like any video |
+| **Share with colleagues** | Send the `.mpx` file (or rename to `.mp4`) | They watch it like any video |
 | **Upload to cloud** | S3, GCS, Dropbox—doesn't matter | Stores like MP4, metadata intact |
 | **Use in AI pipeline** | Load with OpenCV/PyTorch/TensorFlow | Reads video + extracts embedded metadata |
-| **Train ML models** | Point your training script at `.mp5` files | Gets features without reprocessing |
+| **Train ML models** | Point your training script at `.mpx` files | Gets features without reprocessing |
 
 ### The Technical Reality
 
-MP5 is built on **FFV1** (a lossless codec) inside an **MP4 container**. Every modern video player already supports this. We're not inventing anything wild—we're using battle-tested tech in a smarter way.
+MPX is built on **FFV1** (a lossless codec) inside an **MP4 container**. Every modern video player already supports this. We're not inventing anything wild—we're using battle-tested tech in a smarter way.
 
 **Two metadata layers working together:**
 
 ```
 ┌─────────────────────────────────────┐
-│         MP5 File Structure          │
+│         MPX File Structure          │
 ├─────────────────────────────────────┤
 │  MP4 Container (Universal format)   │
-│  ├─ moov/udta/MP5M Atom ────────────┼──► Public metadata (version, hash, timestamps)
+│  ├─ moov/udta/MPXM Atom ────────────┼──► Public metadata (version, hash, timestamps)
 │  └─ Video Stream (FFV1 codec)       │
 │     └─ LSB Layer (hidden) ──────────┼──► AI features, training data, user metadata
 │                                     │
@@ -133,7 +138,7 @@ Zero external dependencies. Zero sync issues. Zero broken links.
 
 ## 🪄 THE REAL MAGIC HAPPENS HERE!
 
-Here's how MP5 stores AI metadata invisibly. It's simpler than you think.
+Here's how MPX stores AI metadata invisibly. It's simpler than you think.
 
 ### The Steganography Process
 
@@ -168,14 +173,14 @@ Do this for every color channel of every pixel, and we can hide **6.2 million bi
 ### The Two Layers
 
 **Layer 1: Atom Metadata (Public)**
-- Lives in MP4's standard metadata structure (`moov/udta/MP5M`)
+- Lives in MP4's standard metadata structure (`moov/udta/MPXM`)
 - Stores: version, timestamp, hash, video specs
 - Any MP4 tool can read this
 
 **Layer 2: LSB Metadata (Hidden)**
 - Embedded in pixel data using steganography
 - Stores: AI features, training data, prompts, parameters
-- Only MP5 decoder extracts this
+- Only MPX decoder extracts this
 
 ### Why This Works
 
@@ -208,7 +213,7 @@ The file is the database. That's the magic.
 
 ## 📊 Auto-Extracted Features
 
-Every MP5 file automatically gets analyzed. Here's what we extract:
+Every MPX file automatically gets analyzed. Here's what we extract:
 
 | Category | Features | What It Measures |
 |----------|----------|------------------|
@@ -223,9 +228,9 @@ Every MP5 file automatically gets analyzed. Here's what we extract:
 
 ---
 
-## 🆚 MP5 vs MP4 (Comparison Table)
+## 🆚 MPX vs MP4 (Comparison Table)
 
-| Feature | MP4 | MP5 |
+| Feature | MP4 | MPX |
 |---------|-----|-----|
 | **Playback** | ✅ Universal | ✅ Universal (same players) |
 | **Quality** | ⚠️ Usually lossy (H.264) | ✅ Lossless (FFV1) |
@@ -236,7 +241,7 @@ Every MP5 file automatically gets analyzed. Here's what we extract:
 | **Verification** | ❌ None | ✅ SHA-256 hash + tamper detection |
 | **Training Data** | ❌ Manual tracking | ✅ Embedded in file |
 
-**Bottom line:** MP4 is for watching. MP5 is for building AI.
+**Bottom line:** MP4 is for watching. MPX is for building AI.
 
 ---
 
@@ -267,24 +272,24 @@ Embed invisible watermarks and ownership data. Verify authenticity and track vid
 
 **macOS:**
 ```bash
-git clone https://github.com/javantanna/mp5.git
-cd mp5
+git clone https://github.com/javantanna/mpx.git
+cd mpx
 chmod +x macos_setup.sh
 ./macos_setup.sh
 ```
 
 **Linux:**
 ```bash
-git clone https://github.com/javantanna/mp5.git
-cd mp5
+git clone https://github.com/javantanna/mpx.git
+cd mpx
 chmod +x linux_setup.sh
 ./linux_setup.sh
 ```
 
 **Windows:**
 ```powershell
-git clone https://github.com/javantanna/mp5.git
-cd mp5
+git clone https://github.com/javantanna/mpx.git
+cd mpx
 .\windows_setup.ps1
 ```
 
@@ -318,7 +323,7 @@ source .venv/bin/activate  # macOS/Linux
 python main.py encode input.mp4 metadata.json
 ```
 
-**Done.** Your MP5 file is in `outputs/output.mp5` with all metadata embedded.
+**Done.** Your MPX file is in `outputs/output.mpx` with all metadata embedded.
 
 ---
 
@@ -332,25 +337,25 @@ Auto-extracts features, embeds metadata, verifies integrity.
 
 **Decode metadata:**
 ```bash
-python main.py decode <file.mp5>
+python main.py decode <file.mpx>
 ```
 Extracts hidden AI metadata to `outputs/output_metadata.json`.
 
 **Verify integrity:**
 ```bash
-python main.py verify <file.mp5>
+python main.py verify <file.mpx>
 ```
 Checks LSB layer, atom layer, and hash verification.
 
 **Get file info:**
 ```bash
-python main.py info <file.mp5>
+python main.py info <file.mpx>
 ```
 Shows all metadata, features, and technical specs.
 
 **GUI Version:**
 ```bash
-python mp5_gui.py
+python mpx_gui.py
 ```
 Drag-and-drop interface with real-time feature preview.
 
@@ -382,12 +387,12 @@ EOF
 python main.py encode video.mp4 metadata.json
 
 # Output:
-# 🚀 mp5 MAGIC DONE SUCCESSFULLY
-# Output: outputs/output.mp5
+# 🚀 mpx MAGIC DONE SUCCESSFULLY
+# Output: outputs/output.mpx
 # Features auto-extracted: 15 (you're welcome)
 
 # 4. Six months later, you forgot what this video was
-python main.py decode outputs/output.mp5
+python main.py decode outputs/output.mpx
 
 # Output shows exact parameters:
 # Model: Runway Gen-3
@@ -403,16 +408,16 @@ python main.py decode outputs/output.mp5
 
 ---
 
-## 🎬 Playing MP5 Files (Optional Setup)
+## 🎬 Playing MPX Files (Optional Setup)
 
-MP5 files are valid MP4 files. You have **two options** to play them:
+MPX files are valid MP4 files. You have **two options** to play them:
 
 ### Option 1: Quick & Easy (Rename to .mp4)
 
 Just rename the file extension:
 
 ```bash
-mv video.mp5 video.mp4
+mv video.mpx video.mp4
 ```
 
 **Pros:**
@@ -421,37 +426,37 @@ mv video.mp5 video.mp4
 - ✅ Works everywhere
 
 **Cons:**
-- ⚠️ Need to rename back to `.mp5` to use MP5 decoder
+- ⚠️ Need to rename back to `.mpx` to use MPX decoder
 
 ---
 
 ### Option 2: File Association (Recommended for Frequent Use)
 
-Set up `.mp5` files to automatically open in VLC Media Player.
+Set up `.mpx` files to automatically open in VLC Media Player.
 
 **macOS:**
 ```bash
-./associate_mp5_macos.sh
+./associate_mpx_macos.sh
 ```
 
 **Linux:**
 ```bash
-./associate_mp5_linux.sh
+./associate_mpx_linux.sh
 ```
 
 **Windows:**
 ```powershell
-.\associate_mp5_windows.ps1
+.\associate_mpx_windows.ps1
 ```
 
 **What this does:**
-- Registers `.mp5` as a known file type
+- Registers `.mpx` as a known file type
 - Associates it with VLC Media Player
 - Double-click to play (metadata stays hidden)
 - No renaming needed
 
 **After setup:**
-- Double-click any `.mp5` file → Opens in VLC automatically
+- Double-click any `.mpx` file → Opens in VLC automatically
 - Video plays normally, AI metadata invisible to VLC
 - Use `python main.py decode` to extract metadata anytime
 
@@ -459,26 +464,26 @@ Set up `.mp5` files to automatically open in VLC Media Player.
 
 ```bash
 # macOS
-./revert_mp5_association_macos.sh
+./revert_mpx_association_macos.sh
 
 # Linux
-./revert_mp5_association_linux.sh
+./revert_mpx_association_linux.sh
 
 # Windows
-.\revert_mp5_association_windows.ps1
+.\revert_mpx_association_windows.ps1
 ```
 
 Removes the association and cleans up dependencies. After reverting, use Option 1 (rename) to play videos.
 
 ---
 
-### Option 3: Use MP5 GUI (All-in-One)
+### Option 3: Use MPX GUI (All-in-One)
 
-Launch the MP5 GUI for a complete video management experience:
+Launch the MPX GUI for a complete video management experience:
 
 ```bash
 source .venv/bin/activate  # Activate environment first
-python mp5_gui.py
+python mpx_gui.py
 ```
 
 **What you can do:**
@@ -490,30 +495,30 @@ python mp5_gui.py
 - 🖱️ **Drag & drop** - Easy file management
 
 **Best for:**
-- Viewing MP5 files with all metadata visible
-- Managing multiple MP5 files
+- Viewing MPX files with all metadata visible
+- Managing multiple MPX files
 - Quick verification and feature inspection
 
 **No file association needed** - The GUI handles everything.
 
 ---
 
-## 🏗️ The MP5 Architecture
+## 🏗️ The MPX Architecture
 
-Here's how MP5 files are actually structured and how the dual-layer system works.
+Here's how MPX files are actually structured and how the dual-layer system works.
 
 ### File Structure Overview
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│               MP5 File (MP4 Container)                  │
+│               MPX File (MP4 Container)                  │
 ├─────────────────────────────────────────────────────────┤
 │                                                         │
 │  Layer 1: MP4 Atom Structure (Public Metadata)          │
 │  ┌─────────────────────────────────────────────┐        │
 │  │ moov                                        │        │
 │  │  └── udta (User Data)                       │        │
-│  │       └── ©mp5 (Custom MP5 Atom)            │◄───────┼─── Public metadata
+│  │       └── ©mpx (Custom MPX Atom)            │◄───────┼─── Public metadata
 │  │            ├─ version: "1.0.0"              │        │    • Version
 │  │            ├─ created: timestamp            │        │    • Timestamp
 │  │            ├─ original_hash: SHA-256        │        │    • Hash
@@ -585,11 +590,11 @@ Bit Position:  0                               31
       "texture_complexity": 32.70188700778534,
       "volume_rms": 0.031494140625
     },
-    "mp5_version": "1.0.0",
+    "mpx_version": "1.0.0",
     "payload_type": "ai_training_data",
     "timestamp": "2025-12-09T01:01:24.745920Z",
     "user_metadata": {
-      "NOTE": "This is a sample metadata file for MP5 just for testing purposes. you can use any json just replace metadata.json with your own metadata file",
+      "NOTE": "This is a sample metadata file for MPX just for testing purposes. you can use any json just replace metadata.json with your own metadata file",
       "ai_model": "Stable Diffusion XL",
       "ai_version": "1.0",
       "author": "Javan Tanna",
@@ -606,7 +611,7 @@ Bit Position:  0                               31
       "tags": [
         "sample",
         "demo",
-        "mp5",
+        "mpx",
         "ai-generated"
       ],
       "title": "input.mp4",
@@ -621,10 +626,10 @@ Bit Position:  0                               31
     "created": "2025-12-09T01:01:24.745920Z",
     "layers": {
       "atom": {
-        "location": "moov.udta.\u00a9mp5"
+        "location": "moov.udta.\u00a9mpx"
       }
     },
-    "mp5_version": "1.0.0",
+    "mpx_version": "1.0.0",
     "notes": "AI Metadata stored in lsb layer",
     "original_hash": "906a9076671cb27c29e574e68a324b2fc0b01affed8375bba7307fdfaa80321c",
     "video_info": {
@@ -679,7 +684,7 @@ Input MP4 Video
 ┌───────────────────────────────────────┐
 │ 6. Write Atom Metadata                │
 │    - Add public metadata to MP4 atoms │
-│    - Store in moov/udta/©mp5          │
+│    - Store in moov/udta/©mpx          │
 └───────────────────────────────────────┘
     ↓
 ┌───────────────────────────────────────┐
@@ -689,17 +694,17 @@ Input MP4 Video
 │    - Confirm data integrity           │
 └───────────────────────────────────────┘
     ↓
-Output MP5 File
+Output MPX File
 ```
 
 ### Decoding Flow
 
 ```
-Input MP5 File
+Input MPX File
     ↓
 ┌───────────────────────────────────────┐
 │ 1. Read Atom Layer                    │
-│    - Extract moov/udta/©mp5 atom      │
+│    - Extract moov/udta/©mpx atom      │
 │    - Decompress → Get file info       │
 └───────────────────────────────────────┘
     ↓
@@ -727,7 +732,7 @@ Input MP5 File
 │    - Return complete metadata         │
 └───────────────────────────────────────┘
     ↓
-Output: Complete MP5 Metadata
+Output: Complete MPX Metadata
 ```
 
 
@@ -765,14 +770,14 @@ Output: Complete MP5 Metadata
 Look, if you see something that could be better, just fix it. That's how we build things.
 
 **Found a bug or have an idea?**  
-[Open an issue](https://github.com/javantanna/mp5/issues). Tell us what's broken or what you want to build.
+[Open an issue](https://github.com/javantanna/mpx/issues). Tell us what's broken or what you want to build.
 
 **Want to write code?**
 
 ```bash
 # Fork it
-git clone https://github.com/javantanna/mp5.git
-cd mp5
+git clone https://github.com/javantanna/mpx.git
+cd mpx
 
 # Make a branch
 git checkout -b feature/your-thing
@@ -782,14 +787,14 @@ git checkout -b feature/your-thing
 
 # Test it
 python main.py encode test.mp4 metadata.json
-python main.py verify outputs/output.mp5
+python main.py verify outputs/output.mpx
 
 # Ship it
 git commit -m "Add: what you built"
 git push origin feature/your-thing
 ```
 
-Then open a Pull Request. We'll review it and merge if it makes MP5 better.
+Then open a Pull Request. We'll review it and merge if it makes MPX better.
 
 **What we need help with:**
 - Bug fixes (things that break the experience)

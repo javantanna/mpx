@@ -6,15 +6,15 @@ import yaml
 
 
 @dataclass
-class MP5Config:
-    """Global configuration for MP5 operations"""
+class MPXConfig:
+    """Global configuration for MPX operations"""
     version: str = "1.0.0"
-    atom_tag: str = "©mp5"
+    atom_tag: str = "©mpx"
     lsb_redundancy: int = 5
     max_metadata_mb: int = 50
     compression_level: int = 6
     hash_algorithm: str = "sha256"
-    temp_dir: str = "/tmp/mp5"
+    temp_dir: str = "/tmp/mpx"
     max_workers: int = 4
     chunk_size: int = 8192
     supported_formats: List[str] = None
@@ -24,7 +24,7 @@ class MP5Config:
             self.supported_formats = ['.mp4', '.mov', '.m4v', '.avi']
     
     @classmethod
-    def from_file(cls,config_path:str)->'MP5Config':
+    def from_file(cls,config_path:str)->'MPXConfig':
         """Load configuration from YAML or JSON file"""
         path=Path(config_path)
         if not path.exists():

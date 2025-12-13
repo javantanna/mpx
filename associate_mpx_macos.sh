@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # ================================================
-# MP5 File Association Setup (macOS)
+# MPX File Association Setup (macOS)
 # ================================================
 
-echo "🔗 Setting up .mp5 file association for VLC..."
+echo "🔗 Setting up .mpx file association for VLC..."
 
 # Check if VLC is installed
 VLC_PATH=""
@@ -33,12 +33,12 @@ fi
 
 # Method 1: Using duti (preferred)
 if command -v duti &> /dev/null; then
-    echo "🔧 Associating .mp5 files with VLC using duti..."
-    duti -s org.videolan.vlc .mp5 all
+    echo "🔧 Associating .mpx files with VLC using duti..."
+    duti -s org.videolan.vlc .mpx all
     echo "✅ Association created with duti"
 else
     # Method 2: Using defaults (fallback)
-    echo "🔧 Associating .mp5 files with VLC using defaults..."
+    echo "🔧 Associating .mpx files with VLC using defaults..."
     defaults write com.apple.LaunchServices/com.apple.launchservices.secure LSHandlers -array-add \
         '{LSHandlerContentType=public.movie;LSHandlerRoleAll=org.videolan.vlc;}'
     
@@ -51,9 +51,9 @@ fi
 
 echo ""
 echo "🎉 Setup complete!"
-echo "   .mp5 files will now open in VLC Media Player"
+echo "   .mpx files will now open in VLC Media Player"
 echo ""
 echo "💡 Test it:"
-echo "   1. Double-click any .mp5 file"
-echo "   2. Or run: open -a VLC your_video.mp5"
+echo "   1. Double-click any .mpx file"
+echo "   2. Or run: open -a VLC your_video.mpx"
 echo ""

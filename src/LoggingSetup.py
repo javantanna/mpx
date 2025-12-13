@@ -32,7 +32,7 @@ class ColoredFormatter(logging.Formatter):
 def setup_logging(level:str="INFO",log_file:Optional[str]=None):
     """Configure logging with console and optional file output"""
 
-    logger=logging.getLogger("mp5")
+    logger=logging.getLogger("mpx")
     logger.setLevel(getattr(logging,level))
 
     # Console handler with colors

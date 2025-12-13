@@ -2,16 +2,16 @@ import json
 import sys
 from datetime import datetime
 from src.LoggingSetup import *
-from src.MP5Config import MP5Config
+from src.MPXConfig import MPXConfig
 from src.Exceptions import *
-from src.MP5Encoder import MP5Encoder  
-from src.MP5Decoder import MP5Decoder
-from src.MP5Verifier import MP5Verifier
+from src.MPXEncoder import MPXEncoder  
+from src.MPXDecoder import MPXDecoder
+from src.MPXVerifier import MPXVerifier
 from pathlib import Path
 
 
 def print_header():
-    print(f"\n{Colors.CYAN}{Colors.BOLD}.mp5 - The BEST AI Video Format on Earth 🌍{Colors.RESET}")
+    print(f"\n{Colors.CYAN}{Colors.BOLD}.mpx - The BEST AI Video Format on Earth 🌍{Colors.RESET}")
     print(f"{Colors.CYAN}.mp4 but on steroids {Colors.RESET}\n")
 
 def cmd_encode(args):
@@ -30,15 +30,15 @@ def cmd_encode(args):
         print(f"{Colors.RED} error loading metadata {str(e)}{Colors.RESET}")
         return 1
     
-    config= MP5Config()
-    encoder= MP5Encoder(config)
+    config= MPXConfig()
+    encoder= MPXEncoder(config)
     
     try:
         result = encoder.encode(input_video, metadata)
 
         # Display results
         print_separator()
-        print(f"{Colors.GREEN}{Colors.BOLD}🚀 mp5 MAGIC DONE SUCCESSFULLY{Colors.RESET}")
+        print(f"{Colors.GREEN}{Colors.BOLD}🚀 mpx MAGIC DONE SUCCESSFULLY{Colors.RESET}")
         print_separator()
         print(f"Output: {result['output_file']}")
         print(f"Size: {result['input_size_mb']:.2f} MB → {result['output_size_mb']:.2f} MB (lossless quality)")
@@ -56,24 +56,24 @@ def cmd_encode(args):
 def cmd_decode(args)->int:
     """Decode video with metadata"""
     if len(args) < 1:
-        print("Error Decoder required <input.mp5>")
-        print("usage: python mp5.py decode input.mp5")
+        print("Error Decoder required <input.mpx>")
+        print("usage: python mpx.py decode input.mpx")
         return 1
-    input_mp5=args[0]
+    input_mpx=args[0]
     output_file=None
     
     # Check if file exists
-    if not Path(input_mp5).exists():
-        print(f"{Colors.RED}❌ File not found: {input_mp5}{Colors.RESET}")
+    if not Path(input_mpx).exists():
+        print(f"{Colors.RED}❌ File not found: {input_mpx}{Colors.RESET}")
         return 1
 
     print_header()
 
-    config=MP5Config()
-    decoder=MP5Decoder(config)
+    config=MPXConfig()
+    decoder=MPXDecoder(config)
 
     try:
-        result=decoder.decode(input_mp5)
+        result=decoder.decode(input_mpx)
 
         print_separator()
         print(f"{Colors.GREEN}{Colors.BOLD}🔓 SECRETS UNLOCKED{Colors.RESET}")
@@ -81,7 +81,7 @@ def cmd_decode(args)->int:
 
         if result.get("file_info"):
             info = result["file_info"]#----------
-            print(f"MP5 Version: {info.get('mp5_version')}")
+            print(f"MPX Version: {info.get('mpx_version')}")
             # Format timestamp
             created = info.get('created', '')
             try:
@@ -125,24 +125,24 @@ def cmd_decode(args)->int:
 def cmd_verify(args):
     """Verify command"""
     if len(args) < 1:
-        print("Error: verify requires <input.mp5>")
-        print("Usage: python mp5.py verify input.mp5")
+        print("Error: verify requires <input.mpx>")
+        print("Usage: python mpx.py verify input.mpx")
         return 1
     
-    input_mp5 = args[0]
+    input_mpx = args[0]
     
     # Check if file exists
-    if not Path(input_mp5).exists():
-        print(f"{Colors.RED}❌ File not found: {input_mp5}{Colors.RESET}")
+    if not Path(input_mpx).exists():
+        print(f"{Colors.RED}❌ File not found: {input_mpx}{Colors.RESET}")
         return 1
     
     print_header()
     
-    config = MP5Config()
-    verifier = MP5Verifier(config)
+    config = MPXConfig()
+    verifier = MPXVerifier(config)
     
     try:
-        result = verifier.verify(input_mp5)
+        result = verifier.verify(input_mpx)
         
         print_separator()
         
@@ -176,36 +176,36 @@ def cmd_verify(args):
 def cmd_info(args):
     """Info command"""
     if len(args) < 1:
-        print("Error: info requires <input.mp5>")
-        print("Usage: python mp5.py info input.mp5")
+        print("Error: info requires <input.mpx>")
+        print("Usage: python mpx.py info input.mpx")
         return 1
     
-    input_mp5 = args[0]
+    input_mpx = args[0]
     
     # Check if file exists
-    if not Path(input_mp5).exists():
-        print(f"{Colors.RED}❌ File not found: {input_mp5}{Colors.RESET}")
+    if not Path(input_mpx).exists():
+        print(f"{Colors.RED}❌ File not found: {input_mpx}{Colors.RESET}")
         return 1
     
     print_header()
     
-    config = MP5Config()
-    decoder = MP5Decoder(config)
+    config = MPXConfig()
+    decoder = MPXDecoder(config)
     
     try:
-        result = decoder.decode(input_mp5)
+        result = decoder.decode(input_mpx)
         
         print_separator()
         print(f"{Colors.CYAN}{Colors.BOLD}📊 FILE BREAKDOWN{Colors.RESET}")
         print_separator()
         
-        print(f"\n📄 File: {input_mp5}")
-        print(f"   Size: {Path(input_mp5).stat().st_size / (1024*1024):.2f} MB")
+        print(f"\n📄 File: {input_mpx}")
+        print(f"   Size: {Path(input_mpx).stat().st_size / (1024*1024):.2f} MB")
         
         if result.get("file_info"):
             info = result["file_info"]
-            print(f"\n🔖 MP5 Info:")
-            print(f"   Version: {info.get('mp5_version')}")
+            print(f"\n🔖 MPX Info:")
+            print(f"   Version: {info.get('mpx_version')}")
             created_raw = info.get('created', '')
             try:
                 created_dt = datetime.fromisoformat(created_raw.replace('Z', '+00:00'))
@@ -267,11 +267,11 @@ def print_separator():
 def show_help():
     print("""
 Usage:
-    python mp5.py encode <input.mp4> <user_metadata.json>
-    python mp5.py decode <input.mp5>
-    python mp5.py verify <input.mp5>
-    python mp5.py info <input.mp5>
-    python mp5.py help
+    python mpx.py encode <input.mp4> <user_metadata.json>
+    python mpx.py decode <input.mpx>
+    python mpx.py verify <input.mpx>
+    python mpx.py info <input.mpx>
+    python mpx.py help
 
 Commands:
     encode    Auto-extract features and embed in video (LSB layer)
@@ -282,13 +282,13 @@ Commands:
 
 Examples:
     # Encode (auto-generates features)
-    python mp5.py encode video.mp4 metadata.json output.mp5
+    python mpx.py encode video.mp4 metadata.json output.mpx
     
     # Decode
-    python mp5.py decode output.mp5
+    python mpx.py decode output.mpx
     
     # Verify
-    python mp5.py verify output.mp5
+    python mpx.py verify output.mpx
 
 Features Auto-Extracted:
     - blur_score, noise_level, compression_artifacts
@@ -301,14 +301,14 @@ Features Auto-Extracted:
 
 
 def main():
-    log_file="mp5.log"
+    log_file="mpx.log"
     logger = setup_logging(log_file=log_file)
 
     if len(sys.argv) < 2:
-        print("\n Create the best video for AI on the Internet : MP5 ")
-        print("  Encode: python mp5.py encode <input.mp4> <metadata.json>")
-        print("  Decode: python mp5.py decode <input.mp5> (or you can just rename the file)")
-        print("  Verify: python mp5.py verify <input.mp5>")
+        print("\n Create the best video for AI on the Internet : MPX ")
+        print("  Encode: python mpx.py encode <input.mp4> <metadata.json>")
+        print("  Decode: python mpx.py decode <input.mpx> (or you can just rename the file)")
+        print("  Verify: python mpx.py verify <input.mpx>")
         sys.exit(1)
     
     command=sys.argv[1].lower()

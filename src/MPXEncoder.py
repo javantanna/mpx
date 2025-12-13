@@ -8,16 +8,16 @@ from utils.VideoUtils import VideoUtils
 import json
 from src.Exceptions import IntegrityError
 from utils.FeatureExtractor import FeatureExtractor
-from src.MP5Config import MP5Config
-from src.MP5Verifier import MP5Verifier
+from src.MPXConfig import MPXConfig
+from src.MPXVerifier import MPXVerifier
 import logging
 import os
 
-logger = logging.getLogger("mp5")
+logger = logging.getLogger("mpx")
 
-class MP5Encoder:
-    """MP5 Encoder"""
-    def __init__(self,config:MP5Config):
+class MPXEncoder:
+    """MPX Encoder"""
+    def __init__(self,config:MPXConfig):
         self.config=config
         self.atom_layer=AtomLayer(config)
         self.lsb_layer=LSBLayer(config)
@@ -29,12 +29,12 @@ class MP5Encoder:
         self,
         video_path: str,
         user_metadata: Dict[str, Any],
-        output_path: str= "outputs/output.mp5",
+        output_path: str= "outputs/output.mpx",
         use_lsb: bool = True,
         verify: bool = True
     ) -> Dict[str, Any]:
         """
-        Encode MP5 file with metadata
+        Encode MPX file with metadata
         
         Returns:
             Dict with encoding results and statistics
@@ -62,7 +62,7 @@ class MP5Encoder:
         # PREPARE ATOM METADATA (Public file info only)
         # Prepare metadata structure
         atom_metadata={
-            "mp5_version": self.config.version,
+            "mpx_version": self.config.version,
             "created": datetime.now().isoformat() + "Z",
             "original_hash": original_hash,
             "video_info": video_info,
@@ -78,7 +78,7 @@ class MP5Encoder:
        
         # PREPARE LSB METADATA (Hidden AI training payload)
         lsb_metadata = {
-            "mp5_version": self.config.version,
+            "mpx_version": self.config.version,
             "timestamp": atom_metadata["created"],
             "payload_type": "ai_training_data",
             "auto_features": auto_features,  # Auto-generated features
@@ -103,7 +103,7 @@ class MP5Encoder:
         if use_lsb:
              # Write LSB layer (HIDDEN AI METADATA)
             logger.info("\n🔒 Injecting hidden data into pixels (stealth mode)...")
-            temp_path = output_path + 'mp5_lsb_temp.mp4'
+            temp_path = output_path + 'mpx_lsb_temp.mp4'
 
              #TODO: complete from here
             self.lsb_layer.write(video_path, lsb_compressed, temp_path)
@@ -124,7 +124,7 @@ class MP5Encoder:
 
         if verify:
             logger.info("\n🔍 Double-checking our work...")
-            verifier=MP5Verifier(self.config)
+            verifier=MPXVerifier(self.config)
 
             verification =verifier.verify(output_path)
             logger.info(f"Verification result: {verification['overall']}")

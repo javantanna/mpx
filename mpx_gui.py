@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-MP5 GUI Application
-A tkinter-based desktop application for playing MP5 files,
+MPX GUI Application
+A tkinter-based desktop application for playing MPX files,
 displaying metadata, and encoding/decoding/verifying videos.
 """
 
@@ -16,11 +16,11 @@ import tempfile
 from datetime import datetime
 import subprocess
 
-# Import MP5 modules
-from src.MP5Config import MP5Config
-from src.MP5Encoder import MP5Encoder
-from src.MP5Decoder import MP5Decoder
-from src.MP5Verifier import MP5Verifier
+# Import MPX modules
+from src.MPXConfig import MPXConfig
+from src.MPXEncoder import MPXEncoder
+from src.MPXDecoder import MPXDecoder
+from src.MPXVerifier import MPXVerifier
 
 
 class VideoPlayer:
@@ -165,12 +165,12 @@ class VideoPlayer:
             self.cap = None
 
 
-class MP5GUI:
-    """Main MP5 GUI Application"""
+class MPXGUI:
+    """Main MPX GUI Application"""
     
     def __init__(self, root):
         self.root = root
-        self.root.title("MP5 Player & Editor")
+        self.root.title("MPX Player & Editor")
         self.root.geometry("1200x800")
         self.root.minsize(900, 600)
         
@@ -179,11 +179,11 @@ class MP5GUI:
         self.style.configure("Title.TLabel", font=("Helvetica", 16, "bold"))
         self.style.configure("Header.TLabel", font=("Helvetica", 12, "bold"))
         
-        # MP5 components
-        self.config = MP5Config()
-        self.encoder = MP5Encoder(self.config)
-        self.decoder = MP5Decoder(self.config)
-        self.verifier = MP5Verifier(self.config)
+        # MPX components
+        self.config = MPXConfig()
+        self.encoder = MPXEncoder(self.config)
+        self.decoder = MPXDecoder(self.config)
+        self.verifier = MPXVerifier(self.config)
         
         # Create notebook (tabs)
         self.notebook = ttk.Notebook(root)
@@ -263,7 +263,7 @@ class MP5GUI:
         output_frame = ttk.LabelFrame(tab, text="Output Path (optional)")
         output_frame.pack(fill=tk.X, padx=20, pady=10)
         
-        self.encode_output_var = tk.StringVar(value="outputs/output.mp5")
+        self.encode_output_var = tk.StringVar(value="outputs/output.mpx")
         ttk.Entry(output_frame, textvariable=self.encode_output_var, width=60).pack(side=tk.LEFT, padx=5, pady=10)
         
         # Encode button
@@ -283,10 +283,10 @@ class MP5GUI:
         self.notebook.add(tab, text="🔓 Decode")
         
         # Title
-        ttk.Label(tab, text="Decode MP5 File", style="Title.TLabel").pack(pady=10)
+        ttk.Label(tab, text="Decode MPX File", style="Title.TLabel").pack(pady=10)
         
         # Input file selection
-        input_frame = ttk.LabelFrame(tab, text="MP5 File")
+        input_frame = ttk.LabelFrame(tab, text="MPX File")
         input_frame.pack(fill=tk.X, padx=20, pady=10)
         
         self.decode_input_var = tk.StringVar()
@@ -309,10 +309,10 @@ class MP5GUI:
         self.notebook.add(tab, text="✅ Verify")
         
         # Title
-        ttk.Label(tab, text="Verify MP5 File", style="Title.TLabel").pack(pady=10)
+        ttk.Label(tab, text="Verify MPX File", style="Title.TLabel").pack(pady=10)
         
         # Input file selection
-        input_frame = ttk.LabelFrame(tab, text="MP5 File")
+        input_frame = ttk.LabelFrame(tab, text="MPX File")
         input_frame.pack(fill=tk.X, padx=20, pady=10)
         
         self.verify_input_var = tk.StringVar()
@@ -338,7 +338,7 @@ class MP5GUI:
         """Open video file for playback"""
         filepath = filedialog.askopenfilename(
             title="Open Video",
-            filetypes=[("MP5 Files", "*.mp5"), ("MP4 Files", "*.mp4"), ("All Files", "*.*")]
+            filetypes=[("MPX Files", "*.mpx"), ("MP4 Files", "*.mp4"), ("All Files", "*.*")]
         )
         if filepath:
             if self.player.load_video(filepath):
@@ -359,7 +359,7 @@ class MP5GUI:
             
             if result.get("file_info"):
                 info = result["file_info"]
-                self.metadata_text.insert(tk.END, f"Version: {info.get('mp5_version', 'N/A')}\n")
+                self.metadata_text.insert(tk.END, f"Version: {info.get('mpx_version', 'N/A')}\n")
                 
                 created = info.get('created', '')
                 try:
@@ -445,18 +445,18 @@ class MP5GUI:
     
     def _browse_decode_input(self):
         filepath = filedialog.askopenfilename(
-            title="Select MP5 File",
-            filetypes=[("MP5 Files", "*.mp5"), ("All Files", "*.*")]
+            title="Select MPX File",
+            filetypes=[("MPX Files", "*.mpx"), ("All Files", "*.*")]
         )
         if filepath:
             self.decode_input_var.set(filepath)
     
     def _decode_video(self):
-        """Decode MP5 file"""
+        """Decode MPX file"""
         input_path = self.decode_input_var.get()
         
         if not input_path:
-            messagebox.showerror("Error", "Please select an MP5 file")
+            messagebox.showerror("Error", "Please select an MPX file")
             return
         
         try:
@@ -470,18 +470,18 @@ class MP5GUI:
     
     def _browse_verify_input(self):
         filepath = filedialog.askopenfilename(
-            title="Select MP5 File",
-            filetypes=[("MP5 Files", "*.mp5"), ("All Files", "*.*")]
+            title="Select MPX File",
+            filetypes=[("MPX Files", "*.mpx"), ("All Files", "*.*")]
         )
         if filepath:
             self.verify_input_var.set(filepath)
     
     def _verify_video(self):
-        """Verify MP5 file"""
+        """Verify MPX file"""
         input_path = self.verify_input_var.get()
         
         if not input_path:
-            messagebox.showerror("Error", "Please select an MP5 file")
+            messagebox.showerror("Error", "Please select an MPX file")
             return
         
         try:
@@ -518,7 +518,7 @@ class MP5GUI:
 
 def main():
     root = tk.Tk()
-    app = MP5GUI(root)
+    app = MPXGUI(root)
     root.protocol("WM_DELETE_WINDOW", app.on_closing)
     root.mainloop()
 

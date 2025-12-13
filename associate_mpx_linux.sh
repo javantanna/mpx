@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # ================================================
-# MP5 File Association Setup (Linux)
+# MPX File Association Setup (Linux)
 # ================================================
 
-echo "🔗 Setting up .mp5 file association for VLC..."
+echo "🔗 Setting up .mpx file association for VLC..."
 
 # Check if VLC is installed
 if ! command -v vlc &> /dev/null; then
@@ -26,8 +26,8 @@ fi
 
 echo "✅ VLC found: $(which vlc)"
 
-# Create .desktop file for MP5
-DESKTOP_FILE="$HOME/.local/share/applications/mp5-vlc.desktop"
+# Create .desktop file for MPX
+DESKTOP_FILE="$HOME/.local/share/applications/mpx-vlc.desktop"
 
 mkdir -p "$HOME/.local/share/applications"
 
@@ -35,30 +35,30 @@ cat > "$DESKTOP_FILE" << 'EOF'
 [Desktop Entry]
 Version=1.0
 Type=Application
-Name=VLC Media Player (MP5)
-Comment=Open MP5 files with VLC
+Name=VLC Media Player (MPX)
+Comment=Open MPX files with VLC
 Exec=vlc %U
 Icon=vlc
 Terminal=false
 Categories=AudioVideo;Player;Recorder;
-MimeType=video/mp5;video/mp4;
+MimeType=video/mpx;video/mp4;
 NoDisplay=true
 EOF
 
 echo "✅ Created desktop entry: $DESKTOP_FILE"
 
 # Update MIME database
-echo "🔧 Registering .mp5 MIME type..."
+echo "🔧 Registering .mpx MIME type..."
 
-MIME_FILE="$HOME/.local/share/mime/packages/mp5.xml"
+MIME_FILE="$HOME/.local/share/mime/packages/mpx.xml"
 mkdir -p "$HOME/.local/share/mime/packages"
 
 cat > "$MIME_FILE" << 'EOF'
 <?xml version="1.0" encoding="UTF-8"?>
 <mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
-  <mime-type type="video/mp5">
-    <comment>MP5 Video File</comment>
-    <glob pattern="*.mp5"/>
+  <mime-type type="video/mpx">
+    <comment>MPX Video File</comment>
+    <glob pattern="*.mpx"/>
     <sub-class-of type="video/mp4"/>
   </mime-type>
 </mime-info>
@@ -66,16 +66,16 @@ EOF
 
 update-mime-database "$HOME/.local/share/mime"
 
-# Associate .mp5 with VLC
-xdg-mime default mp5-vlc.desktop video/mp5
+# Associate .mpx with VLC
+xdg-mime default mpx-vlc.desktop video/mpx
 
 # Update desktop database
 update-desktop-database "$HOME/.local/share/applications"
 
 echo ""
 echo "🎉 Setup complete!"
-echo "   .mp5 files will now open in VLC Media Player"
+echo "   .mpx files will now open in VLC Media Player"
 echo ""
 echo "💡 Test it:"
-echo "   xdg-open your_video.mp5"
+echo "   xdg-open your_video.mpx"
 echo ""

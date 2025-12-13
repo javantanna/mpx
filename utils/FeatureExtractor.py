@@ -8,7 +8,7 @@ from moviepy import VideoFileClip
 import json
 np.set_printoptions(threshold=np.inf)
 
-logger = logging.getLogger("mp5")
+logger = logging.getLogger("mpx")
 
 class FeatureExtractor:
     """Extract video features using OpenCV and NumPy"""

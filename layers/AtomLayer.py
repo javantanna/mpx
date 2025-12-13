@@ -1,4 +1,4 @@
-from src.MP5Config import MP5Config
+from src.MPXConfig import MPXConfig
 from mutagen.mp4 import MP4
 from mutagen import MutagenError
 from src.Exceptions import DecodingError,EncodingError
@@ -7,18 +7,18 @@ from typing import Optional
 import logging
 
 
-logger=logging.getLogger("mp5")
+logger=logging.getLogger("mpx")
 
 
 
 class AtomLayer:
     """MP4 metadata atom operations"""
     
-    def __init__(self,config:MP5Config):
+    def __init__(self,config:MPXConfig):
         self.config=config
 
     def write(self,video_path:str,metadata:bytes,output_path:str)->bool:
-        """Write metadata to MP5 atom layer"""
+        """Write metadata to MPX atom layer"""
         try:
             # Copy file first to preserve original
             if video_path != output_path:
@@ -35,7 +35,7 @@ class AtomLayer:
 
 
     def read(self,video_path:str)->Optional[bytes]:
-        """Read metadata from MP5 atom layer"""
+        """Read metadata from MPX atom layer"""
         try:
             video=MP4(video_path)
             if self.config.atom_tag not in video:
@@ -49,7 +49,7 @@ class AtomLayer:
             raise DecodingError(f"Faild to read atom layer: {str(e)}")
 
     def has_metadata(self,video_path:str)->bool:
-        """Check if metadata exists in MP5 atom layer"""
+        """Check if metadata exists in MPX atom layer"""
         try:
             video=MP4(video_path)
             return self.config.atom_tag in video

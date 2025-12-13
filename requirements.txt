@@ -1,4 +1,4 @@
-# MP5 Dependencies
+# MPX Dependencies
 # Note: tkinter is required but must be installed via system package manager
 # macOS: brew install python-tk@3.14
 # Ubuntu: sudo apt-get install python3-tk

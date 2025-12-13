@@ -168,7 +168,7 @@ echo -e "${CYAN}================================================${NC}"
 echo -e "${CYAN}Setup Complete!${NC}"
 echo -e "${CYAN}================================================${NC}"
 echo ""
-echo -e "${GREEN}woof finally end of the setup now the fun part run main.py of mp5_gui.py!${NC}"
+echo -e "${GREEN}woof finally end of the setup now the fun part run main.py of mpx_gui.py!${NC}"
 echo ""
 exit 0
 

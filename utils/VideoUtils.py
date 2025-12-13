@@ -1,6 +1,6 @@
 import cv2
 from typing import Dict, Any
-from src.MP5Config import MP5Config
+from src.MPXConfig import MPXConfig
 from src.Exceptions import ValidationError
 from pathlib import Path
 
@@ -28,7 +28,7 @@ class VideoUtils:
         return info
 
     @staticmethod
-    def validate_video(video_path: str, config: MP5Config) -> bool:
+    def validate_video(video_path: str, config: MPXConfig) -> bool:
         """Validate video file"""
         path=Path(video_path)
 

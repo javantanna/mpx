@@ -1,4 +1,4 @@
-from src.MP5Config import MP5Config
+from src.MPXConfig import MPXConfig
 import logging
 import numpy as np
 import cv2
@@ -8,9 +8,9 @@ from typing import Optional
 import click
 
 
-logger=logging.getLogger("mp5")
+logger=logging.getLogger("mpx")
 class LSBLayer:
-    def __init__(self,config:MP5Config):
+    def __init__(self,config:MPXConfig):
         self.config=config
 
     @staticmethod
@@ -159,9 +159,9 @@ class LSBLayer:
     # TODO continue from here
 
     @staticmethod
-    def read(mp5_video_path:str,max_frames:int=1000)->Optional[bytes]:
+    def read(mpx_video_path:str,max_frames:int=1000)->Optional[bytes]:
         try:
-            cap=cv2.VideoCapture(mp5_video_path)
+            cap=cv2.VideoCapture(mpx_video_path)
             
             # 1. Read frame 0 immediatrly, we assume Header is here
             ret,frame=cap.read()

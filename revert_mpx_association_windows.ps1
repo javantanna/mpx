@@ -1,8 +1,8 @@
 # ================================================
-# Revert MP5 File Association + Uninstall (Windows)
+# Revert MPX File Association + Uninstall (Windows)
 # ================================================
 
-Write-Host "🔄 Reverting .mp5 file association and cleaning up..." -ForegroundColor Cyan
+Write-Host "🔄 Reverting .mpx file association and cleaning up..." -ForegroundColor Cyan
 
 # Step 1: Remove file association
 Write-Host ""
@@ -11,20 +11,20 @@ Write-Host "-----------------------------------" -ForegroundColor Yellow
 
 try {
     # Remove file extension entry
-    if (Test-Path "HKCU:\Software\Classes\.mp5") {
+    if (Test-Path "HKCU:\Software\Classes\.mpx") {
         Write-Host "🔧 Removing registry entries..." -ForegroundColor Cyan
-        Remove-Item -Path "HKCU:\Software\Classes\.mp5" -Recurse -Force -ErrorAction SilentlyContinue
-        Write-Host "✅ .mp5 extension removed" -ForegroundColor Green
+        Remove-Item -Path "HKCU:\Software\Classes\.mpx" -Recurse -Force -ErrorAction SilentlyContinue
+        Write-Host "✅ .mpx extension removed" -ForegroundColor Green
     } else {
-        Write-Host "ℹ️  .mp5 extension not found, skipping" -ForegroundColor Gray
+        Write-Host "ℹ️  .mpx extension not found, skipping" -ForegroundColor Gray
     }
     
     # Remove file type entry
-    if (Test-Path "HKCU:\Software\Classes\VLC.mp5") {
-        Remove-Item -Path "HKCU:\Software\Classes\VLC.mp5" -Recurse -Force -ErrorAction SilentlyContinue
-        Write-Host "✅ VLC.mp5 file type removed" -ForegroundColor Green
+    if (Test-Path "HKCU:\Software\Classes\VLC.mpx") {
+        Remove-Item -Path "HKCU:\Software\Classes\VLC.mpx" -Recurse -Force -ErrorAction SilentlyContinue
+        Write-Host "✅ VLC.mpx file type removed" -ForegroundColor Green
     } else {
-        Write-Host "ℹ️  VLC.mp5 file type not found, skipping" -ForegroundColor Gray
+        Write-Host "ℹ️  VLC.mpx file type not found, skipping" -ForegroundColor Gray
     }
     
     # Refresh explorer
@@ -40,7 +40,7 @@ public static extern void SHChangeNotify(int wEventId, int uFlags, IntPtr dwItem
     Write-Host "🎉 Cleanup complete!" -ForegroundColor Green
     Write-Host ""
     Write-Host "Summary:" -ForegroundColor White
-    Write-Host "  ✅ .mp5 file association removed" -ForegroundColor Green
+    Write-Host "  ✅ .mpx file association removed" -ForegroundColor Green
     Write-Host "  ✅ Registry entries cleaned up" -ForegroundColor Green
     Write-Host ""
     Write-Host "Note: Python packages and FFmpeg were NOT removed" -ForegroundColor Yellow

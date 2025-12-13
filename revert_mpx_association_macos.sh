@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # ================================================
-# Revert MP5 File Association + Uninstall (macOS)
+# Revert MPX File Association + Uninstall (macOS)
 # ================================================
 
-echo "🔄 Reverting .mp5 file association and cleaning up..."
+echo "🔄 Reverting .mpx file association and cleaning up..."
 
 # Step 1: Remove file association
 echo ""
@@ -13,7 +13,7 @@ echo "-----------------------------------"
 
 if command -v duti &> /dev/null; then
     echo "🔧 Removing association with duti..."
-    duti -s com.apple.finder .mp5 all 2>/dev/null || true
+    duti -s com.apple.finder .mpx all 2>/dev/null || true
     echo "✅ Association removed"
 else
     echo "🔧 Removing association from Launch Services..."
@@ -41,7 +41,7 @@ echo ""
 echo "🎉 Cleanup complete!"
 echo ""
 echo "Summary:"
-echo "  ✅ .mp5 file association removed"
+echo "  ✅ .mpx file association removed"
 echo "  ✅ duti dependency cleaned up"
 echo ""
 echo "Note: Python packages and FFmpeg were NOT removed"

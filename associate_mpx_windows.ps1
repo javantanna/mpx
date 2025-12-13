@@ -1,8 +1,8 @@
 # ================================================
-# MP5 File Association Setup (Windows)
+# MPX File Association Setup (Windows)
 # ================================================
 
-Write-Host "🔗 Setting up .mp5 file association for VLC..." -ForegroundColor Cyan
+Write-Host "🔗 Setting up .mpx file association for VLC..." -ForegroundColor Cyan
 
 # Find VLC installation
 $vlcPaths = @(
@@ -27,25 +27,25 @@ if (-not $vlcPath) {
 
 Write-Host "✅ VLC found at: $vlcPath" -ForegroundColor Green
 
-# Create registry entries for .mp5 file association
+# Create registry entries for .mpx file association
 Write-Host "🔧 Creating registry entries..." -ForegroundColor Cyan
 
 try {
     # Create file extension entry
-    New-Item -Path "HKCU:\Software\Classes\.mp5" -Force | Out-Null
-    Set-ItemProperty -Path "HKCU:\Software\Classes\.mp5" -Name "(Default)" -Value "VLC.mp5"
+    New-Item -Path "HKCU:\Software\Classes\.mpx" -Force | Out-Null
+    Set-ItemProperty -Path "HKCU:\Software\Classes\.mpx" -Name "(Default)" -Value "VLC.mpx"
     
     # Create file type entry
-    New-Item -Path "HKCU:\Software\Classes\VLC.mp5" -Force | Out-Null
-    Set-ItemProperty -Path "HKCU:\Software\Classes\VLC.mp5" -Name "(Default)" -Value "MP5 Video File"
+    New-Item -Path "HKCU:\Software\Classes\VLC.mpx" -Force | Out-Null
+    Set-ItemProperty -Path "HKCU:\Software\Classes\VLC.mpx" -Name "(Default)" -Value "MPX Video File"
     
     # Set default icon
-    New-Item -Path "HKCU:\Software\Classes\VLC.mp5\DefaultIcon" -Force | Out-Null
-    Set-ItemProperty -Path "HKCU:\Software\Classes\VLC.mp5\DefaultIcon" -Name "(Default)" -Value "`"$vlcPath`",0"
+    New-Item -Path "HKCU:\Software\Classes\VLC.mpx\DefaultIcon" -Force | Out-Null
+    Set-ItemProperty -Path "HKCU:\Software\Classes\VLC.mpx\DefaultIcon" -Name "(Default)" -Value "`"$vlcPath`",0"
     
     # Set open command
-    New-Item -Path "HKCU:\Software\Classes\VLC.mp5\shell\open\command" -Force | Out-Null
-    Set-ItemProperty -Path "HKCU:\Software\Classes\VLC.mp5\shell\open\command" -Name "(Default)" -Value "`"$vlcPath`" --started-from-file `"%1`""
+    New-Item -Path "HKCU:\Software\Classes\VLC.mpx\shell\open\command" -Force | Out-Null
+    Set-ItemProperty -Path "HKCU:\Software\Classes\VLC.mpx\shell\open\command" -Name "(Default)" -Value "`"$vlcPath`" --started-from-file `"%1`""
     
     # Refresh explorer
     $code = @'
@@ -58,11 +58,11 @@ public static extern void SHChangeNotify(int wEventId, int uFlags, IntPtr dwItem
     
     Write-Host ""
     Write-Host "🎉 Setup complete!" -ForegroundColor Green
-    Write-Host "   .mp5 files will now open in VLC Media Player" -ForegroundColor White
+    Write-Host "   .mpx files will now open in VLC Media Player" -ForegroundColor White
     Write-Host ""
     Write-Host "💡 Test it:" -ForegroundColor Yellow
-    Write-Host "   1. Double-click any .mp5 file" -ForegroundColor White
-    Write-Host "   2. Or run: Start-Process your_video.mp5" -ForegroundColor White
+    Write-Host "   1. Double-click any .mpx file" -ForegroundColor White
+    Write-Host "   2. Or run: Start-Process your_video.mpx" -ForegroundColor White
     Write-Host ""
     
 } catch {

@@ -1,22 +1,22 @@
 import logging
 from datetime import datetime
 from typing import Dict, Any
-from src.MP5Decoder import MP5Decoder
-from src.MP5Config import MP5Config
+from src.MPXDecoder import MPXDecoder
+from src.MPXConfig import MPXConfig
 
-logger = logging.getLogger("mp5")
+logger = logging.getLogger("mpx")
 
 
-class MP5Verifier:
-    def __init__(self, config: MP5Config):
+class MPXVerifier:
+    def __init__(self, config: MPXConfig):
         self.config = config
-        self.decoder = MP5Decoder(config)
+        self.decoder = MPXDecoder(config)
 
-    def verify(self, mp5_path: str) -> Dict[str, Any]:
-        logger.info(f"Verifying: {mp5_path}")
+    def verify(self, mpx_path: str) -> Dict[str, Any]:
+        logger.info(f"Verifying: {mpx_path}")
         
         result = {
-            "file": mp5_path,
+            "file": mpx_path,
             "timestamp": datetime.utcnow().isoformat() + "Z",
             "lsb_layer": {"status": "unknown"},
             "atom_layer": {"status": "unknown"},
@@ -24,7 +24,7 @@ class MP5Verifier:
         }
 
         try:
-            data = self.decoder.decode(mp5_path)
+            data = self.decoder.decode(mpx_path)
             
             # Check LSB layer
             if data.get("ai_metadata"):

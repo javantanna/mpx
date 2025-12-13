@@ -142,7 +142,7 @@ echo -e "${CYAN}================================================${NC}"
 echo -e "${CYAN}Setup Complete! Linux install ready.${NC}"
 echo -e "${CYAN}================================================${NC}"
 echo ""
-echo -e "${GREEN}woof finally! Now run main.py or mp5_gui.py 😎${NC}"
+echo -e "${GREEN}woof finally! Now run main.py or mpx_gui.py 😎${NC}"
 echo ""
 
 exit 0
