@@ -1,18 +1,17 @@
 <div align="center">
 
-# .MPX 
+
 # .MPX 
 #### *The BEST AI Video Format on Earth 🌍*
 mp4 but on steroids
 
 ---
 
-<<<<<<< Updated upstream
+
 <img src="assets/logo.jpg" alt="MP5 Logo" width="200"/>
 =======
 
 <img src="assets/logo.jpg" alt="MPX Logo" width="200"/>
->>>>>>> Stashed changes
 
 **Version 1.0.0** | **License Apache 2.0** | **Cross-platform**
 
