@@ -1,7 +1,7 @@
 <div align="center">
 
 # .MPX 
-#### *The AI Native Video Format  🌍*
+#### *The AI Native Video Format*
 mp4 but on steroids
 
 ---
