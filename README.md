@@ -1,7 +1,7 @@
 <div align="center">
 
 # .MPX 
-#### *The BEST AI Video Format on Earth 🌍*
+#### *The AI Native Video Format  🌍*
 mp4 but on steroids
 
 ---
